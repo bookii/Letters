@@ -27,7 +27,9 @@ public struct LettersApp: App {
 
     public var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationRootView { path in
+                IndexView(path: path)
+            }
         }
         .modelContainer(sharedModelContainer)
     }
