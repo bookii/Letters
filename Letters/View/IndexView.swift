@@ -18,8 +18,6 @@ public struct IndexView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel = IndexViewModel()
     @Query private var items: [Item] = []
-    @State private var photo: PhotosPickerItem?
-
     public init(path: Binding<NavigationPath>) {
         _path = path
     }
