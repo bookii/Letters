@@ -8,8 +8,8 @@
 import Combine
 import Foundation
 import PhotosUI
-import UIKit
 import SwiftUI
+import UIKit
 
 public final class IndexViewModel: NSObject, ObservableObject {
     @Published public var uiImage: UIImage?

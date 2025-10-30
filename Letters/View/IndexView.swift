@@ -13,7 +13,7 @@ public struct IndexView: View {
     private enum Destination: Hashable {
         case analyze(uiImage: UIImage)
     }
-    
+
     @Binding private var path: NavigationPath
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel = IndexViewModel()
@@ -21,7 +21,7 @@ public struct IndexView: View {
     public init(path: Binding<NavigationPath>) {
         _path = path
     }
-    
+
     public var body: some View {
         VStack {
             PhotosPicker(selection: $viewModel.pickerItem) {
@@ -34,7 +34,10 @@ public struct IndexView: View {
             }
         }
         .navigationDestination(for: Destination.self) { destination in
-            EmptyView()
+            switch destination {
+            case let .analyze(uiImage):
+                EmptyView()
+            }
         }
 //        NavigationSplitView {
 //            List {
