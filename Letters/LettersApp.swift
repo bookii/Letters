@@ -5,8 +5,8 @@
 //  Created by mizznoff on 2025/10/27.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 public struct LettersApp: App {

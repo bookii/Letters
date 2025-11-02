@@ -9,12 +9,12 @@ import Foundation
 import SwiftData
 
 @Model
-public final class Word: Identifiable {
+public final class Word: Identifiable, Sendable {
     public private(set) var id: UUID
     public private(set) var createdAt: Date
     public private(set) var text: String
     public private(set) var imageData: Data
-    
+
     public init(id: UUID = .init(), createdAt: Date = .now, text: String, imageData: Data) {
         self.id = id
         self.createdAt = createdAt

@@ -1,5 +1,5 @@
 //
-//  ModelContainer.swift
+//  LettersModelContainer.swift
 //  Letters
 //
 //  Created by mizznoff on 2025/11/02.
@@ -21,6 +21,6 @@ public final class LettersModelContainer {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
-    
+
     private init() {}
 }
