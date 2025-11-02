@@ -24,7 +24,7 @@ public struct IndexView: View {
 
     public var body: some View {
         VStack {
-            PhotosPicker(selection: $viewModel.pickerItem) {
+            PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
                 Text("アルバムから選択する")
             }
         }
@@ -36,7 +36,7 @@ public struct IndexView: View {
         .navigationDestination(for: Destination.self) { destination in
             switch destination {
             case let .analyze(uiImage):
-                EmptyView()
+                AnalyzeView(uiImage: uiImage)
             }
         }
 //        NavigationSplitView {
