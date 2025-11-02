@@ -39,11 +39,7 @@ public final class AnalyzeViewModel: NSObject, ObservableObject {
                     else {
                         return true
                     }
-                    if self.letterImages == nil {
-                        self.letterImages = [letterImage]
-                    } else {
-                        self.letterImages!.append(letterImage)
-                    }
+                    self.letterImages = (self.letterImages ?? []) + [letterImage]
                     return true
                 }
             }
