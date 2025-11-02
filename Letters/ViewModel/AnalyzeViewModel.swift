@@ -11,7 +11,7 @@ import NaturalLanguage
 import UIKit
 import Vision
 
-public final class AnalyzeViewModel: NSObject, ObservableObject {
+public final class AnalyzeViewModel: ObservableObject {
     @Published public var letterImages: [UIImage]?
     private let uiImage: UIImage
 
@@ -20,44 +20,59 @@ public final class AnalyzeViewModel: NSObject, ObservableObject {
     }
 
     public func analyze() {
-        let request = VNRecognizeTextRequest { [weak self] request, _ in
-            guard let self = self else { return }
-            guard let observations = request.results as? [VNRecognizedTextObservation] else {
-                letterImages = []
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else {
                 return
             }
-
-            for observation in observations {
-                guard let candidate = observation.topCandidates(1).first else {
-                    continue
+            let request = VNRecognizeTextRequest { [weak self] request, _ in
+                guard let self else {
+                    return
                 }
+                guard let observations = request.results as? [VNRecognizedTextObservation] else {
+                    DispatchQueue.main.async {
+                        self.letterImages = []
+                    }
+                    return
+                }
+
                 let tokenizer = NLTokenizer(unit: .word)
-                tokenizer.string = candidate.string
-                tokenizer.enumerateTokens(in: candidate.string.startIndex ..< candidate.string.endIndex) { range, _ in
-                    guard let box = try? candidate.boundingBox(for: range)?.boundingBox,
-                          let letterImage = self.cropImage(self.uiImage, with: box)
-                    else {
+                for observation in observations {
+                    guard let candidate = observation.topCandidates(1).first else {
+                        continue
+                    }
+                    tokenizer.string = candidate.string
+                    tokenizer.enumerateTokens(in: candidate.string.startIndex ..< candidate.string.endIndex) { range, _ in
+                        guard let box = try? candidate.boundingBox(for: range)?.boundingBox,
+                              let letterImage = self.cropImage(self.uiImage, with: box)
+                        else {
+                            return true
+                        }
+                        DispatchQueue.main.async {
+                            self.letterImages = (self.letterImages ?? []) + [letterImage]
+                        }
                         return true
                     }
-                    self.letterImages = (self.letterImages ?? []) + [letterImage]
-                    return true
                 }
             }
-        }
 
-        request.recognitionLevel = .accurate
-        request.recognitionLanguages = ["ja", "en"]
-        request.usesLanguageCorrection = false
-        request.minimumTextHeight = 0.1
-        guard let cgImage = uiImage.cgImage else {
-            letterImages = []
-            return
-        }
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        do {
-            try handler.perform([request])
-        } catch {
-            letterImages = []
+            request.recognitionLevel = .accurate
+            request.recognitionLanguages = ["ja", "en"]
+            request.usesLanguageCorrection = false
+            request.minimumTextHeight = 0.1
+            guard let cgImage = uiImage.cgImage else {
+                DispatchQueue.main.async {
+                    self.letterImages = []
+                }
+                return
+            }
+            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            do {
+                try handler.perform([request])
+            } catch {
+                DispatchQueue.main.async {
+                    self.letterImages = []
+                }
+            }
         }
     }
 
