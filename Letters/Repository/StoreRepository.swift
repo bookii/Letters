@@ -42,3 +42,24 @@ public final class StoreRepository: StoreRepositoryProtocol {
         }
     }
 }
+
+#if DEBUG
+    public final class MockStoreRepository: StoreRepositoryProtocol {
+        public static let shared = MockStoreRepository()
+        public let modelContainer: ModelContainer
+
+        private init() {
+            do {
+                // TODO: 実装が一通り完了したら inStoredInMemoryOnly = false にする
+                let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+                modelContainer = try ModelContainer(for: Word.self, configurations: configuration)
+            } catch {
+                fatalError("Failed to initialize ModelContainer: \(error)")
+            }
+        }
+
+        public func save(words _: [Word]) {
+            // NOP
+        }
+    }
+#endif

@@ -70,7 +70,20 @@ private struct AnalyzeContentView: View {
 }
 
 #if DEBUG
-    // #Preview {
-//    AnalyzeView(uiImage: )
-    // }
+    import SwiftData
+
+    #Preview {
+        @Previewable @State var uiImage: UIImage? = nil
+        NavigationRootView { path in
+            if let uiImage {
+                AnalyzeView(path: path, uiImage: uiImage)
+            }
+        }
+        .modelContainer(MockStoreRepository.shared.modelContainer)
+        .environment(\.analyzeRepository, MockAnalyzeRepository.shared)
+        .environment(\.storeRepository, MockStoreRepository.shared)
+        .task {
+            uiImage = await UIImage.mockImage()
+        }
+    }
 #endif

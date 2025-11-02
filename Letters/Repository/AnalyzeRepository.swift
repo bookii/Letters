@@ -93,3 +93,15 @@ public final class AnalyzeRepository: AnalyzeRepositoryProtocol {
         return UIImage(cgImage: croppedCgImage, scale: image.scale, orientation: image.imageOrientation)
     }
 }
+
+#if DEBUG
+    public final class MockAnalyzeRepository: AnalyzeRepositoryProtocol {
+        public static let shared = MockAnalyzeRepository()
+
+        private init() {}
+
+        public func analyzeIntoWords(uiImage _: UIImage) async throws -> [Word] {
+            await Word.mockWords()
+        }
+    }
+#endif

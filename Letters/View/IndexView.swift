@@ -70,6 +70,9 @@ private struct IndexContentView: View {
     #Preview {
         NavigationRootView { path in
             IndexView(path: path)
+                .modelContainer(MockStoreRepository.shared.modelContainer)
+                .environment(\.analyzeRepository, MockAnalyzeRepository.shared)
+                .environment(\.storeRepository, MockStoreRepository.shared)
         }
     }
 #endif
