@@ -18,6 +18,8 @@ public struct LettersApp: App {
                 IndexView(path: path)
             }
         }
-        .modelContainer(LettersModelContainer.shared)
+        .modelContainer(StoreRepository.shared.modelContainer)
+        .environment(\.analyzeRepository, AnalyzeRepository.shared)
+        .environment(\.storeRepository, StoreRepository.shared)
     }
 }

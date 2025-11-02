@@ -15,26 +15,33 @@ public final class AnalyzeViewModel: ObservableObject {
     @Published public private(set) var words: [Word]?
     @Published public private(set) var error: Error?
     private let analyzeRepository: AnalyzeRepositoryProtocol
+    private let storeRepository: StoreRepositoryProtocol
 
-    public init(analyzeRepository: AnalyzeRepositoryProtocol) {
+    public init(analyzeRepository: AnalyzeRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
         self.analyzeRepository = analyzeRepository
+        self.storeRepository = storeRepository
     }
 
     public func analyzeIntoWords(uiImage: UIImage) {
-        Task.detached { [weak self] in
-            guard let self else {
-                return
-            }
+        Task {
             do {
                 let words = try await analyzeRepository.analyzeIntoWords(uiImage: uiImage)
-                Task { @MainActor in
+                await MainActor.run {
                     self.words = words
                 }
             } catch {
-                Task { @MainActor in
+                await MainActor.run {
                     self.error = error
                 }
             }
         }
+    }
+
+    public func save() {
+        guard let words else {
+            // TODO: throw error
+            return
+        }
+        storeRepository.save(words: words)
     }
 }
