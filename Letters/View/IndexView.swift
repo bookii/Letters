@@ -36,7 +36,7 @@ public struct IndexView: View {
         .navigationDestination(for: Destination.self) { destination in
             switch destination {
             case let .analyze(uiImage):
-                EmptyView()
+                AnalyzeView(uiImage: uiImage)
             }
         }
 //        NavigationSplitView {
