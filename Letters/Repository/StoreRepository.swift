@@ -14,14 +14,13 @@ extension EnvironmentValues {
 }
 
 public protocol StoreRepositoryProtocol {
-    var modelContainer: ModelContainer! { get }
+    var modelContainer: ModelContainer { get }
     func save(words: [Word])
 }
 
 public final class StoreRepository: StoreRepositoryProtocol {
     public static let shared = StoreRepository()
-
-    public private(set) var modelContainer: ModelContainer!
+    public let modelContainer: ModelContainer
     private var modelContext: ModelContext {
         // ref: https://stackoverflow.com/questions/79195801/swiftdata-unit-testing-exc-breakpoint-on-insert
         modelContainer.mainContext
