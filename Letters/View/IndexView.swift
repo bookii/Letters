@@ -15,17 +15,20 @@ public struct IndexView: View {
     }
 
     @Binding private var path: NavigationPath
-    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \Word.createdAt) private var words: [Word]
     @StateObject private var viewModel = IndexViewModel()
-    @Query private var items: [Item] = []
     public init(path: Binding<NavigationPath>) {
         _path = path
     }
 
     public var body: some View {
-        VStack {
-            PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
-                Text("アルバムから選択する")
+        List(words) { word in
+            if let uiImage = UIImage(data: word.imageData) {
+                Section {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                }
             }
         }
         .onReceive(viewModel.$uiImage) { uiImage in
@@ -37,6 +40,13 @@ public struct IndexView: View {
             switch destination {
             case let .analyze(uiImage):
                 AnalyzeView(uiImage: uiImage)
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
+                    Label("", systemImage: "plus")
+                }
             }
         }
 //        NavigationSplitView {
@@ -64,28 +74,13 @@ public struct IndexView: View {
 //            Text("Select an item")
 //        }
     }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
-    }
 }
 
 #if DEBUG
     #Preview {
         NavigationRootView { path in
             IndexView(path: path)
-                .modelContainer(for: Item.self, inMemory: true)
+                .modelContainer(LettersModelContainer.shared)
         }
     }
 #endif
