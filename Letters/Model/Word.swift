@@ -9,8 +9,8 @@ import Foundation
 import SwiftData
 
 @Model
-public final class Word: Identifiable, Sendable {
-    public private(set) var id: UUID
+public final class Word: Identifiable, @unchecked Sendable {
+    @Attribute(.unique) public private(set) var id: UUID
     public private(set) var createdAt: Date
     public private(set) var text: String
     public private(set) var imageData: Data

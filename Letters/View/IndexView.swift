@@ -10,6 +10,18 @@ import SwiftData
 import SwiftUI
 
 public struct IndexView: View {
+    @Binding private var path: NavigationPath
+
+    public init(path: Binding<NavigationPath>) {
+        _path = path
+    }
+
+    public var body: some View {
+        IndexContentView(path: $path)
+    }
+}
+
+private struct IndexContentView: View {
     private enum Destination: Hashable {
         case analyze(uiImage: UIImage)
     }
@@ -17,17 +29,19 @@ public struct IndexView: View {
     @Binding private var path: NavigationPath
     @Query(sort: \Word.createdAt) private var words: [Word]
     @StateObject private var viewModel = IndexViewModel()
-    public init(path: Binding<NavigationPath>) {
+    init(path: Binding<NavigationPath>) {
         _path = path
     }
 
-    public var body: some View {
-        List(words) { word in
-            if let uiImage = UIImage(data: word.imageData) {
-                Section {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFit()
+    var body: some View {
+        List {
+            ForEach(words) { word in
+                if let uiImage = UIImage(data: word.imageData) {
+                    Section {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                    }
                 }
             }
         }
@@ -39,7 +53,7 @@ public struct IndexView: View {
         .navigationDestination(for: Destination.self) { destination in
             switch destination {
             case let .analyze(uiImage):
-                AnalyzeView(uiImage: uiImage)
+                AnalyzeView(path: $path, uiImage: uiImage)
             }
         }
         .toolbar {
@@ -56,7 +70,6 @@ public struct IndexView: View {
     #Preview {
         NavigationRootView { path in
             IndexView(path: path)
-                .modelContainer(LettersModelContainer.shared)
         }
     }
 #endif

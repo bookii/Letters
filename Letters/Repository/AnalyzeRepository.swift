@@ -12,15 +12,17 @@ import UIKit
 import Vision
 
 extension EnvironmentValues {
-    @Entry var analyzeRepository: AnalyzeRepositoryProtocol = AnalyzeRepository()
+    @Entry var analyzeRepository: AnalyzeRepositoryProtocol = AnalyzeRepository.shared
 }
 
 public protocol AnalyzeRepositoryProtocol {
     func analyzeIntoWords(uiImage: UIImage) async throws -> [Word]
 }
 
-public final class AnalyzeRepository: NSObject, AnalyzeRepositoryProtocol {
-    override public init() {}
+public final class AnalyzeRepository: AnalyzeRepositoryProtocol {
+    public static let shared = AnalyzeRepository()
+
+    private init() {}
 
     public func analyzeIntoWords(uiImage: UIImage) async throws -> [Word] {
         try await withCheckedThrowingContinuation { continuation in
@@ -43,7 +45,7 @@ public final class AnalyzeRepository: NSObject, AnalyzeRepositoryProtocol {
                     tokenizer.enumerateTokens(in: text.startIndex ..< text.endIndex) { range, _ in
                         guard let box = try? candidate.boundingBox(for: range)?.boundingBox,
                               let letterImage = self.cropImage(uiImage, with: box),
-                              let imageData = uiImage.jpegData(compressionQuality: 0.9)
+                              let imageData = letterImage.jpegData(compressionQuality: 0.9)
                         else {
                             return true
                         }
@@ -51,6 +53,7 @@ public final class AnalyzeRepository: NSObject, AnalyzeRepositoryProtocol {
                         return true
                     }
                 }
+                continuation.resume(returning: words)
             }
 
             request.recognitionLevel = .accurate
