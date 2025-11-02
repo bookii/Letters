@@ -12,87 +12,36 @@ import UIKit
 import Vision
 
 public final class AnalyzeViewModel: ObservableObject {
-    @Published public var letterImages: [UIImage]?
-    private let uiImage: UIImage
+    @Published public private(set) var words: [Word]?
+    @Published public private(set) var error: Error?
+    private let analyzeRepository: AnalyzeRepositoryProtocol
+    private let storeRepository: StoreRepositoryProtocol
 
-    public init(uiImage: UIImage) {
-        self.uiImage = uiImage
+    public init(analyzeRepository: AnalyzeRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
+        self.analyzeRepository = analyzeRepository
+        self.storeRepository = storeRepository
     }
 
-    public func analyze() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self else {
-                return
-            }
-            let request = VNRecognizeTextRequest { [weak self] request, _ in
-                guard let self else {
-                    return
-                }
-                guard let observations = request.results as? [VNRecognizedTextObservation] else {
-                    DispatchQueue.main.async {
-                        self.letterImages = []
-                    }
-                    return
-                }
-
-                let tokenizer = NLTokenizer(unit: .word)
-                for observation in observations {
-                    guard let candidate = observation.topCandidates(1).first else {
-                        continue
-                    }
-                    tokenizer.string = candidate.string
-                    tokenizer.enumerateTokens(in: candidate.string.startIndex ..< candidate.string.endIndex) { range, _ in
-                        guard let box = try? candidate.boundingBox(for: range)?.boundingBox,
-                              let letterImage = self.cropImage(self.uiImage, with: box)
-                        else {
-                            return true
-                        }
-                        DispatchQueue.main.async {
-                            self.letterImages = (self.letterImages ?? []) + [letterImage]
-                        }
-                        return true
-                    }
-                }
-            }
-
-            request.recognitionLevel = .accurate
-            request.recognitionLanguages = ["ja", "en"]
-            request.usesLanguageCorrection = false
-            request.minimumTextHeight = 0.1
-            guard let cgImage = uiImage.cgImage else {
-                DispatchQueue.main.async {
-                    self.letterImages = []
-                }
-                return
-            }
-            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+    public func analyzeIntoWords(uiImage: UIImage) {
+        Task {
             do {
-                try handler.perform([request])
+                let words = try await analyzeRepository.analyzeIntoWords(uiImage: uiImage)
+                await MainActor.run {
+                    self.words = words
+                }
             } catch {
-                DispatchQueue.main.async {
-                    self.letterImages = []
+                await MainActor.run {
+                    self.error = error
                 }
             }
         }
     }
 
-    private func cropImage(_ image: UIImage, with boundingBox: CGRect) -> UIImage? {
-        guard let cgImage = image.cgImage else {
-            return nil
+    public func save() {
+        guard let words else {
+            // TODO: throw error
+            return
         }
-        let width = CGFloat(cgImage.width)
-        let height = CGFloat(cgImage.height)
-        let marginRatio: CGFloat = 0.05
-        let expandedBox = boundingBox.insetBy(dx: -CGFloat(marginRatio) * boundingBox.width,
-                                              dy: -CGFloat(marginRatio) * boundingBox.height)
-        // VisionのboundingBoxは左下原点・正規化座標
-        let rect = CGRect(x: expandedBox.origin.x * width,
-                          y: (1 - expandedBox.origin.y - expandedBox.height) * height,
-                          width: expandedBox.width * width,
-                          height: expandedBox.height * height)
-        guard let croppedCgImage = cgImage.cropping(to: rect) else {
-            return nil
-        }
-        return UIImage(cgImage: croppedCgImage, scale: image.scale, orientation: image.imageOrientation)
+        storeRepository.save(words: words)
     }
 }

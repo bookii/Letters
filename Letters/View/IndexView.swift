@@ -10,22 +10,39 @@ import SwiftData
 import SwiftUI
 
 public struct IndexView: View {
-    private enum Destination: Hashable {
-        case analyze(uiImage: UIImage)
-    }
-
     @Binding private var path: NavigationPath
-    @Environment(\.modelContext) private var modelContext
-    @StateObject private var viewModel = IndexViewModel()
-    @Query private var items: [Item] = []
+
     public init(path: Binding<NavigationPath>) {
         _path = path
     }
 
     public var body: some View {
-        VStack {
-            PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
-                Text("アルバムから選択する")
+        IndexContentView(path: $path)
+    }
+}
+
+private struct IndexContentView: View {
+    private enum Destination: Hashable {
+        case analyze(uiImage: UIImage)
+    }
+
+    @Binding private var path: NavigationPath
+    @Query(sort: \Word.createdAt) private var words: [Word]
+    @StateObject private var viewModel = IndexViewModel()
+    init(path: Binding<NavigationPath>) {
+        _path = path
+    }
+
+    var body: some View {
+        List {
+            ForEach(words) { word in
+                if let uiImage = UIImage(data: word.imageData) {
+                    Section {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                    }
+                }
             }
         }
         .onReceive(viewModel.$uiImage) { uiImage in
@@ -36,46 +53,14 @@ public struct IndexView: View {
         .navigationDestination(for: Destination.self) { destination in
             switch destination {
             case let .analyze(uiImage):
-                AnalyzeView(uiImage: uiImage)
+                AnalyzeView(path: $path, uiImage: uiImage)
             }
         }
-//        NavigationSplitView {
-//            List {
-//                ForEach(items) { item in
-//                    NavigationLink {
-//                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-//                    } label: {
-//                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-//                    }
-//                }
-//                .onDelete(perform: deleteItems)
-//            }
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    EditButton()
-//                }
-//                ToolbarItem {
-//                    Button(action: addItem) {
-//                        Label("Add Item", systemImage: "plus")
-//                    }
-//                }
-//            }
-//        } detail: {
-//            Text("Select an item")
-//        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
+                    Label("", systemImage: "plus")
+                }
             }
         }
     }
@@ -85,7 +70,6 @@ public struct IndexView: View {
     #Preview {
         NavigationRootView { path in
             IndexView(path: path)
-                .modelContainer(for: Item.self, inMemory: true)
         }
     }
 #endif
