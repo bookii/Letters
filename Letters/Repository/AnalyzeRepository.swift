@@ -49,7 +49,7 @@ public final class AnalyzeRepository: AnalyzeRepositoryProtocol {
                         else {
                             return true
                         }
-                        words.append(.init(text: text, imageData: imageData))
+                        words.append(.init(text: String(text[range]), imageData: imageData))
                         return true
                     }
                 }
