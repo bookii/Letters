@@ -24,7 +24,7 @@ public struct IndexView: View {
 
     public var body: some View {
         VStack {
-            PhotosPicker(selection: $viewModel.pickerItem) {
+            PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
                 Text("アルバムから選択する")
             }
         }
