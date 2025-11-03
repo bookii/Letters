@@ -55,7 +55,7 @@ private struct AnalyzerContentView: View {
             } else {
                 ProgressView()
                     .onAppear {
-                        viewModel.analyzerIntoWords(uiImage: uiImage)
+                        viewModel.analyzeIntoWords(uiImage: uiImage)
                     }
             }
         }
