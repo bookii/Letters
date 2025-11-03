@@ -1,5 +1,5 @@
 //
-//  AnalyzeRepository.swift
+//  AnalyzerRepository.swift
 //  Letters
 //
 //  Created by mizznoff on 2025/11/02.
@@ -12,19 +12,19 @@ import UIKit
 import Vision
 
 extension EnvironmentValues {
-    @Entry var analyzeRepository: AnalyzeRepositoryProtocol = AnalyzeRepository.shared
+    @Entry var analyzerRepository: AnalyzerRepositoryProtocol = AnalyzerRepository.shared
 }
 
-public protocol AnalyzeRepositoryProtocol {
-    func analyzeIntoWords(uiImage: UIImage) async throws -> [Word]
+public protocol AnalyzerRepositoryProtocol {
+    func analyzerIntoWords(uiImage: UIImage) async throws -> [Word]
 }
 
-public final class AnalyzeRepository: AnalyzeRepositoryProtocol {
-    public static let shared = AnalyzeRepository()
+public final class AnalyzerRepository: AnalyzerRepositoryProtocol {
+    public static let shared = AnalyzerRepository()
 
     private init() {}
 
-    public func analyzeIntoWords(uiImage: UIImage) async throws -> [Word] {
+    public func analyzerIntoWords(uiImage: UIImage) async throws -> [Word] {
         try await withCheckedThrowingContinuation { continuation in
             let request = VNRecognizeTextRequest { [weak self] request, _ in
                 guard let self,
@@ -95,12 +95,12 @@ public final class AnalyzeRepository: AnalyzeRepositoryProtocol {
 }
 
 #if DEBUG
-    public final class MockAnalyzeRepository: AnalyzeRepositoryProtocol {
-        public static let shared = MockAnalyzeRepository()
+    public final class MockAnalyzerRepository: AnalyzerRepositoryProtocol {
+        public static let shared = MockAnalyzerRepository()
 
         private init() {}
 
-        public func analyzeIntoWords(uiImage _: UIImage) async throws -> [Word] {
+        public func analyzerIntoWords(uiImage _: UIImage) async throws -> [Word] {
             await Word.mockWords()
         }
     }
