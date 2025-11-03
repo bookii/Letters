@@ -1,5 +1,5 @@
 //
-//  AnalyzeRepository.swift
+//  AnalyzerRepository.swift
 //  Letters
 //
 //  Created by mizznoff on 2025/11/02.
@@ -12,15 +12,15 @@ import UIKit
 import Vision
 
 extension EnvironmentValues {
-    @Entry var analyzeRepository: AnalyzeRepositoryProtocol = AnalyzeRepository.shared
+    @Entry var analyzerRepository: AnalyzerRepositoryProtocol = AnalyzerRepository.shared
 }
 
-public protocol AnalyzeRepositoryProtocol {
+public protocol AnalyzerRepositoryProtocol {
     func analyzeIntoWords(uiImage: UIImage) async throws -> [Word]
 }
 
-public final class AnalyzeRepository: AnalyzeRepositoryProtocol {
-    public static let shared = AnalyzeRepository()
+public final class AnalyzerRepository: AnalyzerRepositoryProtocol {
+    public static let shared = AnalyzerRepository()
 
     private init() {}
 
@@ -95,8 +95,8 @@ public final class AnalyzeRepository: AnalyzeRepositoryProtocol {
 }
 
 #if DEBUG
-    public final class MockAnalyzeRepository: AnalyzeRepositoryProtocol {
-        public static let shared = MockAnalyzeRepository()
+    public final class MockAnalyzerRepository: AnalyzerRepositoryProtocol {
+        public static let shared = MockAnalyzerRepository()
 
         private init() {}
 

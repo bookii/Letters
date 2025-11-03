@@ -1,5 +1,5 @@
 //
-//  AnalyzeView.swift
+//  AnalyzerView.swift
 //  Letters
 //
 //  Created by mizznoff on 2025/10/30.
@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 import UIKit
 
-public struct AnalyzeView: View {
-    @Environment(\.analyzeRepository) private var analyzeRepository
+public struct AnalyzerView: View {
+    @Environment(\.analyzerRepository) private var analyzerRepository
     @Environment(\.storeRepository) private var storeRepository
     @Binding private var path: NavigationPath
     private var uiImage: UIImage
@@ -21,18 +21,18 @@ public struct AnalyzeView: View {
     }
 
     public var body: some View {
-        AnalyzeContentView(uiImage: uiImage, analyzeRepository: analyzeRepository, storeRepository: storeRepository)
+        AnalyzerContentView(uiImage: uiImage, analyzerRepository: analyzerRepository, storeRepository: storeRepository)
     }
 }
 
-private struct AnalyzeContentView: View {
-    @StateObject private var viewModel: AnalyzeViewModel
+private struct AnalyzerContentView: View {
+    @StateObject private var viewModel: AnalyzerViewModel
     @State private var viewWidth: CGFloat = 0
     private let uiImage: UIImage
 
-    fileprivate init(uiImage: UIImage, analyzeRepository: AnalyzeRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
+    fileprivate init(uiImage: UIImage, analyzerRepository: AnalyzerRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
         self.uiImage = uiImage
-        _viewModel = .init(wrappedValue: .init(analyzeRepository: analyzeRepository, storeRepository: storeRepository))
+        _viewModel = .init(wrappedValue: .init(analyzerRepository: analyzerRepository, storeRepository: storeRepository))
     }
 
     fileprivate var body: some View {
@@ -76,11 +76,11 @@ private struct AnalyzeContentView: View {
         @Previewable @State var uiImage: UIImage? = nil
         NavigationRootView { path in
             if let uiImage {
-                AnalyzeView(path: path, uiImage: uiImage)
+                AnalyzerView(path: path, uiImage: uiImage)
             }
         }
         .modelContainer(MockStoreRepository.shared.modelContainer)
-        .environment(\.analyzeRepository, MockAnalyzeRepository.shared)
+        .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
         .environment(\.storeRepository, MockStoreRepository.shared)
         .task {
             uiImage = await UIImage.mockImage()
