@@ -27,9 +27,10 @@ private struct IndexContentView: View {
         case editor
     }
 
-    @Binding private var path: NavigationPath
     @Query(sort: \Word.createdAt) private var words: [Word]
     @StateObject private var viewModel = IndexViewModel()
+    @Binding private var path: NavigationPath
+
     init(path: Binding<NavigationPath>) {
         _path = path
     }
