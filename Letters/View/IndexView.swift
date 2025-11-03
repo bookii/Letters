@@ -23,12 +23,14 @@ public struct IndexView: View {
 
 private struct IndexContentView: View {
     private enum Destination: Hashable {
-        case analyze(uiImage: UIImage)
+        case analyzer(uiImage: UIImage)
+        case writer
     }
 
-    @Binding private var path: NavigationPath
     @Query(sort: \Word.createdAt) private var words: [Word]
     @StateObject private var viewModel = IndexViewModel()
+    @Binding private var path: NavigationPath
+
     init(path: Binding<NavigationPath>) {
         _path = path
     }
@@ -47,16 +49,25 @@ private struct IndexContentView: View {
         }
         .onReceive(viewModel.$uiImage) { uiImage in
             if let uiImage {
-                path.append(Destination.analyze(uiImage: uiImage))
+                path.append(Destination.analyzer(uiImage: uiImage))
             }
         }
         .navigationDestination(for: Destination.self) { destination in
             switch destination {
-            case let .analyze(uiImage):
-                AnalyzeView(path: $path, uiImage: uiImage)
+            case let .analyzer(uiImage):
+                AnalyzerView(path: $path, uiImage: uiImage)
+            case .writer:
+                WriterView(path: $path)
             }
         }
         .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    path.append(Destination.writer)
+                } label: {
+                    Image(systemName: "square.and.pencil")
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
                     Label("", systemImage: "plus")
@@ -71,7 +82,7 @@ private struct IndexContentView: View {
         NavigationRootView { path in
             IndexView(path: path)
                 .modelContainer(MockStoreRepository.shared.modelContainer)
-                .environment(\.analyzeRepository, MockAnalyzeRepository.shared)
+                .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
                 .environment(\.storeRepository, MockStoreRepository.shared)
         }
     }

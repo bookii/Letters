@@ -19,7 +19,7 @@ public struct LettersApp: App {
             }
         }
         .modelContainer(StoreRepository.shared.modelContainer)
-        .environment(\.analyzeRepository, AnalyzeRepository.shared)
+        .environment(\.analyzerRepository, AnalyzerRepository.shared)
         .environment(\.storeRepository, StoreRepository.shared)
     }
 }
