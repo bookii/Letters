@@ -24,7 +24,7 @@ public struct IndexView: View {
 private struct IndexContentView: View {
     private enum Destination: Hashable {
         case analyzer(uiImage: UIImage)
-        case editor
+        case writer
     }
 
     @Query(sort: \Word.createdAt) private var words: [Word]
@@ -56,14 +56,14 @@ private struct IndexContentView: View {
             switch destination {
             case let .analyzer(uiImage):
                 AnalyzerView(path: $path, uiImage: uiImage)
-            case .editor:
-                EmptyView()
+            case .writer:
+                WriterView(path: $path)
             }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    path.append(Destination.editor)
+                    path.append(Destination.writer)
                 } label: {
                     Image(systemName: "square.and.pencil")
                 }
