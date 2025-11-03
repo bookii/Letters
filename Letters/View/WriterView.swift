@@ -21,10 +21,8 @@ public struct WriterView: View {
 }
 
 private struct WriterContentView: View {
-    @Query(sort: \Word.createdAt) private var words: [Word]
     @State private var nsAttributedText: NSAttributedString = .init(string: "")
     @State private var isFirstResponder: Bool = false
-    @State private var size: CGSize?
     @Binding private var path: NavigationPath
 
     fileprivate init(path: Binding<NavigationPath>) {
@@ -40,7 +38,6 @@ private struct WriterContentView: View {
                 Color.gray
                     .ignoresSafeArea()
             }
-            .frame(width: size?.width, height: size?.height)
     }
 }
 
