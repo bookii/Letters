@@ -16,7 +16,7 @@ extension EnvironmentValues {
 }
 
 public protocol AnalyzerRepositoryProtocol {
-    func analyzerIntoWords(uiImage: UIImage) async throws -> [Word]
+    func analyzeIntoWords(uiImage: UIImage) async throws -> [Word]
 }
 
 public final class AnalyzerRepository: AnalyzerRepositoryProtocol {
@@ -24,7 +24,7 @@ public final class AnalyzerRepository: AnalyzerRepositoryProtocol {
 
     private init() {}
 
-    public func analyzerIntoWords(uiImage: UIImage) async throws -> [Word] {
+    public func analyzeIntoWords(uiImage: UIImage) async throws -> [Word] {
         try await withCheckedThrowingContinuation { continuation in
             let request = VNRecognizeTextRequest { [weak self] request, _ in
                 guard let self,
@@ -100,7 +100,7 @@ public final class AnalyzerRepository: AnalyzerRepositoryProtocol {
 
         private init() {}
 
-        public func analyzerIntoWords(uiImage _: UIImage) async throws -> [Word] {
+        public func analyzeIntoWords(uiImage _: UIImage) async throws -> [Word] {
             await Word.mockWords()
         }
     }
