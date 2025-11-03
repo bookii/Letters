@@ -24,6 +24,7 @@ public struct IndexView: View {
 private struct IndexContentView: View {
     private enum Destination: Hashable {
         case analyze(uiImage: UIImage)
+        case write
     }
 
     @Binding private var path: NavigationPath
@@ -54,9 +55,18 @@ private struct IndexContentView: View {
             switch destination {
             case let .analyze(uiImage):
                 AnalyzeView(path: $path, uiImage: uiImage)
+            case .write:
+                EmptyView()
             }
         }
         .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    path.append(Destination.write)
+                } label: {
+                    Image(systemName: "square.and.pencil")
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
                     Label("", systemImage: "plus")
