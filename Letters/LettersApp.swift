@@ -5,7 +5,6 @@
 //  Created by mizznoff on 2025/10/27.
 //
 
-import SwiftData
 import SwiftUI
 
 @main
@@ -18,7 +17,6 @@ public struct LettersApp: App {
                 IndexView(path: path)
             }
         }
-        .modelContainer(StoreRepository.shared.modelContainer)
         .environment(\.analyzerRepository, AnalyzerRepository.shared)
         .environment(\.storeRepository, StoreRepository.shared)
     }

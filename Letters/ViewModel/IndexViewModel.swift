@@ -12,7 +12,10 @@ import SwiftUI
 import UIKit
 
 public final class IndexViewModel: NSObject, ObservableObject {
+    @Published public private(set) var words: [Word]?
+    @Published public private(set) var error: Error?
     @Published public var uiImage: UIImage?
+
     @Published public var pickerItem: PhotosPickerItem? {
         didSet {
             guard let pickerItem else {
@@ -34,6 +37,47 @@ public final class IndexViewModel: NSObject, ObservableObject {
                     }
                 }
             }
+        }
+    }
+
+    // TODO: 動作確認が完了したら 20 ぐらいの適切な値にしておく
+    private let limit: Int = 5
+    private var offset: Int = 0
+    private var hasNoMoreWords: Bool = false
+    private let storeRepository: StoreRepositoryProtocol
+
+    public init(storeRepository: StoreRepositoryProtocol) {
+        self.storeRepository = storeRepository
+    }
+
+    public func refreshWords() {
+        do {
+            hasNoMoreWords = false
+            offset = 0
+            let fetchedWords = try storeRepository.fetchWords(sortBy: [.init(keyPath: \.createdAt, order: .asc)], limit: limit, offset: offset)
+            words = fetchedWords
+            offset += limit
+            if fetchedWords.isEmpty {
+                hasNoMoreWords = true
+            }
+        } catch {
+            self.error = error
+        }
+    }
+
+    public func fetchMoreWords() {
+        do {
+            if hasNoMoreWords {
+                return
+            }
+            let fetchedWords = try storeRepository.fetchWords(sortBy: [.init(keyPath: \.createdAt, order: .asc)], limit: limit, offset: offset)
+            words = (words ?? []) + fetchedWords
+            offset += limit
+            if fetchedWords.isEmpty {
+                hasNoMoreWords = true
+            }
+        } catch {
+            self.error = error
         }
     }
 }
