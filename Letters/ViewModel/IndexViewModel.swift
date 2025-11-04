@@ -52,6 +52,7 @@ public final class IndexViewModel: NSObject, ObservableObject {
 
     public func refreshWords() {
         do {
+            hasNoMoreWords = false
             offset = 0
             let fetchedWords = try storeRepository.fetchWords(sortBy: [.init(keyPath: \.createdAt, order: .asc)], limit: limit, offset: offset)
             words = fetchedWords
