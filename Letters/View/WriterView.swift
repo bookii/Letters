@@ -46,7 +46,6 @@ private struct WriterContentView: View {
         NavigationRootView { path in
             WriterView(path: path)
         }
-        .modelContainer(MockStoreRepository.shared.modelContainer)
         .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
         .environment(\.storeRepository, MockStoreRepository.shared)
     }
