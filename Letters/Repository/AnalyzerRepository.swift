@@ -101,7 +101,8 @@ public final class AnalyzerRepository: AnalyzerRepositoryProtocol {
         private init() {}
 
         public func analyzeIntoWords(uiImage _: UIImage) async throws -> [Word] {
-            await Word.mockWords()
+            await Word.preloadMockWords()
+            return Word.preloadedMockWords
         }
     }
 #endif

@@ -78,7 +78,7 @@ public final class StoreRepository: StoreRepositoryProtocol {
 
     public func fetchWords<Property: Comparable>(prefix: String? = nil, sortBy sortConditions: [StoreSortCondition<Property>], limit: Int, offset: Int) throws -> [Word] {
         var words = FetchDescriptor<Word>(
-            predicate: #Predicate { prefix != nil ? $0.text.starts(with: prefix!) : true },
+            predicate: #Predicate { prefix == nil || $0.text.starts(with: prefix!) },
             sortBy: sortConditions.map(\.sortDescriptor)
         )
         words.fetchLimit = limit
@@ -107,14 +107,7 @@ public final class StoreRepository: StoreRepositoryProtocol {
         }
 
         public func fetchWords<Property: Comparable>(prefix _: String? = nil, sortBy _: [StoreSortCondition<Property>], limit _: Int, offset _: Int) throws -> [Word] {
-            var mockWords: [Word] = []
-            let semaphore = DispatchSemaphore(value: 0)
-            Task {
-                mockWords = await Word.mockWords()
-                semaphore.signal()
-            }
-            semaphore.wait()
-            return mockWords
+            Word.preloadedMockWords
         }
     }
 #endif

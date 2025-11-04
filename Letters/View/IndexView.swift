@@ -87,6 +87,9 @@ private struct IndexContentView: View {
             IndexView(path: path)
                 .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
                 .environment(\.storeRepository, MockStoreRepository.shared)
+                .task {
+                    await Word.preloadMockWords()
+                }
         }
     }
 #endif
