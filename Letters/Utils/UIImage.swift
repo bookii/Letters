@@ -12,7 +12,7 @@ public extension UIImage {
     #if DEBUG
         convenience init?(url: URL) async throws {
             let request = URLRequest(url: url)
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, _) = try await URLSession.shared.data(for: request)
             self.init(data: data)
         }
 

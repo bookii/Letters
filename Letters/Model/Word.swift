@@ -26,16 +26,28 @@ public final class Word: Identifiable, @unchecked Sendable {
 
 public extension Word {
     #if DEBUG
-        static func mockWords() async -> [Word] {
+        static var preloadedMockWords: [Word] {
+            _preloadedMockWords ?? []
+        }
+
+        private static var _preloadedMockWords: [Word]?
+
+        static func preloadMockWords() async {
+            if _preloadedMockWords == nil {
+                _preloadedMockWords = await loadMockWords()
+            }
+        }
+
+        private static func loadMockWords() async -> [Word] {
             return [
                 .init(text: "コメント",
-                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/0858cfe1d2a83b64af2ec52f4895df2c.png")!)!.jpegData(compressionQuality: 0.9)!),
+                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/9d49450a3a24b0e7bf1ac1617c577bb0.png")!)!.jpegData(compressionQuality: 0.9)!),
                 .init(text: "ほぼ",
-                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/3133d8bcd099fcf471b7b50552071fd1.png")!)!.jpegData(compressionQuality: 0.9)!),
+                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/74a97a6d90825636b2ee1a49b1d2e8e3.png")!)!.jpegData(compressionQuality: 0.9)!),
                 .init(text: "全部",
-                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/fe2753d9d3000dfc63f98facb01cfc4a.png")!)!.jpegData(compressionQuality: 0.9)!),
+                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/e94048ab44be8f17ef37a60e9581dd29.png")!)!.jpegData(compressionQuality: 0.9)!),
                 .init(text: "読みます",
-                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/55c90bba689a573792535c586c06efdf.png")!)!.jpegData(compressionQuality: 0.9)!),
+                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/323175cb4113ff92e930b9f1a6c93ab5.png")!)!.jpegData(compressionQuality: 0.9)!),
             ]
         }
     #endif

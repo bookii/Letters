@@ -6,10 +6,10 @@
 //
 
 import PhotosUI
-import SwiftData
 import SwiftUI
 
 public struct IndexView: View {
+    @Environment(\.storeRepository) private var storeRepository
     @Binding private var path: NavigationPath
 
     public init(path: Binding<NavigationPath>) {
@@ -17,7 +17,7 @@ public struct IndexView: View {
     }
 
     public var body: some View {
-        IndexContentView(path: $path)
+        IndexContentView(path: $path, storeRepository: storeRepository)
     }
 }
 
@@ -27,17 +27,17 @@ private struct IndexContentView: View {
         case writer
     }
 
-    @Query(sort: \Word.createdAt) private var words: [Word]
-    @StateObject private var viewModel = IndexViewModel()
+    @StateObject private var viewModel: IndexViewModel
     @Binding private var path: NavigationPath
 
-    init(path: Binding<NavigationPath>) {
+    init(path: Binding<NavigationPath>, storeRepository: StoreRepositoryProtocol) {
         _path = path
+        _viewModel = .init(wrappedValue: .init(storeRepository: storeRepository))
     }
 
     var body: some View {
         List {
-            ForEach(words) { word in
+            ForEach(viewModel.words ?? []) { word in
                 if let uiImage = UIImage(data: word.imageData) {
                     Section {
                         Image(uiImage: uiImage)
@@ -46,6 +46,10 @@ private struct IndexContentView: View {
                     }
                 }
             }
+            // TODO: 末尾表示時に追加読み込み
+        }
+        .onAppear {
+            viewModel.refreshWords()
         }
         .onReceive(viewModel.$uiImage) { uiImage in
             if let uiImage {
@@ -81,9 +85,11 @@ private struct IndexContentView: View {
     #Preview {
         NavigationRootView { path in
             IndexView(path: path)
-                .modelContainer(MockStoreRepository.shared.modelContainer)
                 .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
                 .environment(\.storeRepository, MockStoreRepository.shared)
+                .task {
+                    await Word.preloadMockWords()
+                }
         }
     }
 #endif
