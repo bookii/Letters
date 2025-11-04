@@ -26,6 +26,7 @@ public struct AnalyzerView: View {
 }
 
 private struct AnalyzerContentView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: AnalyzerViewModel
     @State private var viewWidth: CGFloat = 0
     private let uiImage: UIImage
@@ -63,6 +64,7 @@ private struct AnalyzerContentView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("保存") {
                     viewModel.save()
+                    dismiss()
                 }
             }
         }
