@@ -63,8 +63,9 @@ public struct FlowLayout: Layout {
                     // Finish the current row without this subview.
                     finalizeRow(index: max(index - 1, 0), idealSize: idealSize)
                 }
+                addToRow(index: index, idealSize: idealSize)
 
-                if index == subviews.endIndex {
+                if index == subviews.endIndex - 1 {
                     // Finish this row; it's either full or on the last view anyway.
                     finalizeRow(index: index, idealSize: idealSize)
                 }
@@ -95,16 +96,13 @@ public struct FlowLayout: Layout {
 
             func finalizeRow(index: Int, idealSize _: CGSize) {
                 let rowWidth = maxPossibleWidth - remainingWidth
-                rows.append(
-                    Row(
-                        range: index - max(itemsInRow - 1, 0) ..< index + 1,
-                        xOffsets: xOffsets,
-                        frame: CGRect(x: 0, y: rowMinY, width: rowWidth, height: rowHeight)
-                    )
-                )
+                rows.append(Row(range: index - max(itemsInRow - 1, 0) ..< index + 1,
+                                xOffsets: xOffsets,
+                                frame: CGRect(x: 0, y: rowMinY, width: rowWidth, height: rowHeight)))
                 bounds.width = max(bounds.width, rowWidth)
                 let ySpacing = spacing ?? ViewSpacing().distance(to: ViewSpacing(), along: .vertical)
                 bounds.height = rowHeight + ySpacing
+                rowMinY += rowHeight + ySpacing
                 itemsInRow = 0
                 rowHeight = 0
                 xOffsets.removeAll()

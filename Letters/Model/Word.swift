@@ -11,6 +11,7 @@ import UIKit
 
 @Model
 public final class Word: Identifiable, @unchecked Sendable {
+    // TODO: 画像内の順番を維持できるように画像単位で保存する
     @Attribute(.unique) public private(set) var id: UUID
     public private(set) var createdAt: Date
     public private(set) var text: String

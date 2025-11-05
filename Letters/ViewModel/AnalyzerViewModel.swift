@@ -42,6 +42,10 @@ public final class AnalyzerViewModel: ObservableObject {
             // TODO: throw error
             return
         }
-        storeRepository.save(words: words)
+        do {
+            try storeRepository.save(words: words)
+        } catch {
+            self.error = error
+        }
     }
 }

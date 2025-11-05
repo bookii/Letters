@@ -38,21 +38,12 @@ private struct AnalyzerContentView: View {
 
     fileprivate var body: some View {
         Group {
-            if let wordImages = viewModel.words?.compactMap({ UIImage(data: $0.imageData) }) {
-                ScrollView {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5)) {
-                        ForEach(wordImages.indices, id: \.self) { index in
-                            Image(uiImage: wordImages[index])
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxWidth: viewWidth / 5, maxHeight: viewWidth / 5)
-                        }
+            if let words = viewModel.words {
+                WordsScrollView(words: words)
+                    .onGeometryChange(for: CGFloat.self, of: \.size.width) { width in
+                        viewWidth = width
                     }
-                }
-                .onGeometryChange(for: CGFloat.self, of: \.size.width) { width in
-                    viewWidth = width
-                }
-                .padding(16)
+                    .padding(16)
             } else {
                 ProgressView()
                     .onAppear {
