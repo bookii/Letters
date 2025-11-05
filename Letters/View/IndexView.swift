@@ -40,7 +40,6 @@ private struct IndexContentView: View {
             .onLastWordAppear {
                 viewModel.loadMoreWords()
             }
-            .id(UUID())
             .onAppear {
                 viewModel.reloadWords()
             }
