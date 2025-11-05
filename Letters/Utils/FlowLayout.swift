@@ -90,7 +90,7 @@ public struct FlowLayout: Layout {
                 remainingWidth -= width
                 // Ensure the row height is as tall as the tallest item.
                 rowHeight = max(rowHeight, idealSize.height)
-                // Can fit in ths row, add it.
+                // Can fit in this row, add it.
                 itemsInRow += 1
             }
 
