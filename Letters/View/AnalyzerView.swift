@@ -39,7 +39,7 @@ private struct AnalyzerContentView: View {
     fileprivate var body: some View {
         Group {
             if let words = viewModel.words {
-                WordsScrollView(words: words)
+                WordsScrollFlowView(words: words)
                     .onGeometryChange(for: CGFloat.self, of: \.size.width) { width in
                         viewWidth = width
                     }

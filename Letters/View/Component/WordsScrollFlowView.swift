@@ -1,5 +1,5 @@
 //
-//  WordsScrollView.swift
+//  WordsScrollFlowView.swift
 //  Letters
 //
 //  Created by mizznoff on 2025/11/06.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct WordsScrollView: View {
+public struct WordsScrollFlowView: View {
     private var words: [Word]
     private var onLastWordAppearAction: (() -> Void)?
 
@@ -50,7 +50,7 @@ public struct WordsScrollView: View {
         @Previewable @State var id: UUID?
         @Previewable @State var text = ""
         VStack {
-            WordsScrollView(words: Word.preloadedMockWords)
+            WordsScrollFlowView(words: Word.preloadedMockWords)
                 .onLastWordAppear {
                     text = "Last word appeared"
                 }
