@@ -7,8 +7,10 @@
 
 import Foundation
 import SwiftUI
+import UIKit
 
 public struct TextViewRepresentable: UIViewRepresentable {
+    private var onKeyboardToolbarLastWordAppearAction: (() -> Void)?
     @Binding private var nsAttributedText: NSAttributedString
     @Binding private var isFirstResponder: Bool
 
@@ -24,6 +26,13 @@ public struct TextViewRepresentable: UIViewRepresentable {
         textView.isEditable = true
         textView.isScrollEnabled = true
         textView.textContainerInset = .init(top: 16, left: 8, bottom: 16, right: 8)
+        
+        let toolbar = UIToolbar(frame: .init(x: 0, y: 0, width: textView.frame.size.width, height: 44))
+        let label = UILabel(frame: .init(x: 0, y: 0, width: textView.frame.size.width, height: 44))
+        label.text = "test"
+        toolbar.addSubview(label)
+        textView.inputAccessoryView = toolbar
+
         return textView
     }
 
@@ -63,6 +72,14 @@ public struct TextViewRepresentable: UIViewRepresentable {
         public func textViewDidEndEditing(_: UITextView) {
             parent.isFirstResponder = false
         }
+    }
+    
+    // MARK: - ViewModifier
+    
+    public func onKeyboardToolbarLastWordAppear(perform action: @escaping () -> Void) -> Self {
+        var view = self
+        view.onKeyboardToolbarLastWordAppearAction = action
+        return view
     }
 }
 
