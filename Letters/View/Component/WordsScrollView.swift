@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct WordsScrollView: View {
-    @State private var words: [Word]
+    private var words: [Word]
     private var onLastWordAppearAction: (() -> Void)?
 
     public init(words: [Word]) {
