@@ -41,7 +41,7 @@ public final class IndexViewModel: NSObject, ObservableObject {
     }
 
     // TODO: 動作確認が完了したら 20 ぐらいの適切な値にしておく
-    private let limit: Int = 5
+    private let limit: Int = 2
     private var offset: Int = 0
     private var hasNoMoreWords: Bool = false
     private let storeRepository: StoreRepositoryProtocol
@@ -50,11 +50,11 @@ public final class IndexViewModel: NSObject, ObservableObject {
         self.storeRepository = storeRepository
     }
 
-    public func refreshWords() {
+    public func reloadWords() {
         do {
             hasNoMoreWords = false
             offset = 0
-            let fetchedWords = try storeRepository.fetchWords(sortBy: [.init(keyPath: \.createdAt, order: .asc)], limit: limit, offset: offset)
+            let fetchedWords = try storeRepository.fetchWords(sortBy: [.init(keyPath: \.createdAt, order: .desc)], limit: limit, offset: offset)
             words = fetchedWords
             offset += limit
             if fetchedWords.isEmpty {
@@ -65,12 +65,12 @@ public final class IndexViewModel: NSObject, ObservableObject {
         }
     }
 
-    public func fetchMoreWords() {
+    public func loadMoreWords() {
         do {
             if hasNoMoreWords {
                 return
             }
-            let fetchedWords = try storeRepository.fetchWords(sortBy: [.init(keyPath: \.createdAt, order: .asc)], limit: limit, offset: offset)
+            let fetchedWords = try storeRepository.fetchWords(sortBy: [.init(keyPath: \.createdAt, order: .desc)], limit: limit, offset: offset)
             words = (words ?? []) + fetchedWords
             offset += limit
             if fetchedWords.isEmpty {
