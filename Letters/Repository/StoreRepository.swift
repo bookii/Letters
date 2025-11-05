@@ -103,11 +103,11 @@ public final class StoreRepository: StoreRepositoryProtocol {
             }
         }
 
-        public func save(words _: [Word]) {
+        public func save(words _: [Word]) throws {
             // NOP
         }
 
-        public func fetchWords<Property: Comparable>(prefix _: String? = nil, sortBy _: [StoreSortCondition<Property>], limit: Int, offset: Int) -> [Word] {
+        public func fetchWords<Property: Comparable>(prefix _: String? = nil, sortBy _: [StoreSortCondition<Property>], limit: Int, offset: Int) throws -> [Word] {
             let mockWords = Word.preloadedMockWords
             guard offset < mockWords.endIndex else {
                 return []
