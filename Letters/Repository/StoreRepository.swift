@@ -42,7 +42,7 @@ private extension StoreSortCondition {
 
 public protocol StoreRepositoryProtocol {
     var modelContainer: ModelContainer { get }
-    func save(words: [Word])
+    func save(words: [Word]) throws
     func fetchWords<Property: Comparable>(prefix: String?, sortBy sortConditions: [StoreSortCondition<Property>], limit: Int, offset: Int) throws -> [Word]
 }
 
@@ -70,10 +70,11 @@ public final class StoreRepository: StoreRepositoryProtocol {
         }
     }
 
-    public func save(words: [Word]) {
+    public func save(words: [Word]) throws {
         for word in words {
             modelContext.insert(word)
         }
+        try modelContext.save()
     }
 
     public func fetchWords<Property: Comparable>(prefix: String? = nil, sortBy sortConditions: [StoreSortCondition<Property>], limit: Int, offset: Int) throws -> [Word] {
@@ -102,12 +103,16 @@ public final class StoreRepository: StoreRepositoryProtocol {
             }
         }
 
-        public func save(words _: [Word]) {
+        public func save(words _: [Word]) throws {
             // NOP
         }
 
-        public func fetchWords<Property: Comparable>(prefix _: String? = nil, sortBy _: [StoreSortCondition<Property>], limit _: Int, offset _: Int) throws -> [Word] {
-            Word.preloadedMockWords
+        public func fetchWords<Property: Comparable>(prefix _: String? = nil, sortBy _: [StoreSortCondition<Property>], limit: Int, offset: Int) throws -> [Word] {
+            let mockWords = Word.preloadedMockWords
+            guard offset < mockWords.endIndex else {
+                return []
+            }
+            return Array(Word.preloadedMockWords[offset ..< min(offset + limit, mockWords.endIndex)])
         }
     }
 #endif

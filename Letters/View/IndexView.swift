@@ -35,61 +35,60 @@ private struct IndexContentView: View {
         _viewModel = .init(wrappedValue: .init(storeRepository: storeRepository))
     }
 
-    var body: some View {
-        List {
-            ForEach(viewModel.words ?? []) { word in
-                if let uiImage = UIImage(data: word.imageData) {
-                    Section {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFit()
+    fileprivate var body: some View {
+        WordsScrollView(words: viewModel.words ?? [])
+            .onLastWordAppear {
+                viewModel.loadMoreWords()
+            }
+            .onAppear {
+                viewModel.reloadWords()
+            }
+            .onReceive(viewModel.$uiImage) { uiImage in
+                if let uiImage {
+                    path.append(Destination.analyzer(uiImage: uiImage))
+                }
+            }
+            .navigationDestination(for: Destination.self) { destination in
+                switch destination {
+                case let .analyzer(uiImage):
+                    AnalyzerView(path: $path, uiImage: uiImage)
+                case .writer:
+                    WriterView(path: $path)
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        path.append(Destination.writer)
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
+                        Label("", systemImage: "plus")
                     }
                 }
             }
-            // TODO: 末尾表示時に追加読み込み
-        }
-        .onAppear {
-            viewModel.refreshWords()
-        }
-        .onReceive(viewModel.$uiImage) { uiImage in
-            if let uiImage {
-                path.append(Destination.analyzer(uiImage: uiImage))
-            }
-        }
-        .navigationDestination(for: Destination.self) { destination in
-            switch destination {
-            case let .analyzer(uiImage):
-                AnalyzerView(path: $path, uiImage: uiImage)
-            case .writer:
-                WriterView(path: $path)
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    path.append(Destination.writer)
-                } label: {
-                    Image(systemName: "square.and.pencil")
-                }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
-                    Label("", systemImage: "plus")
-                }
-            }
-        }
     }
 }
 
 #if DEBUG
     #Preview {
+        @Previewable @State var hasPreloaded = false
         NavigationRootView { path in
-            IndexView(path: path)
-                .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
-                .environment(\.storeRepository, MockStoreRepository.shared)
-                .task {
-                    await Word.preloadMockWords()
-                }
+            if hasPreloaded {
+                IndexView(path: path)
+                    .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
+                    .environment(\.storeRepository, MockStoreRepository.shared)
+
+            } else {
+                ProgressView()
+            }
+        }
+        .task {
+            await Word.preloadMockWords()
+            hasPreloaded = true
         }
     }
 #endif
