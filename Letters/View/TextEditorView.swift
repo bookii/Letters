@@ -1,5 +1,5 @@
 //
-//  WriterView.swift
+//  TextEditorView.swift
 //  Letters
 //
 //  Created by mizznoff on 2025/11/03.
@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-public struct WriterView: View {
+public struct TextEditorView: View {
     @Binding private var path: NavigationPath
 
     public init(path: Binding<NavigationPath>) {
@@ -16,11 +16,11 @@ public struct WriterView: View {
     }
 
     public var body: some View {
-        WriterContentView(path: $path)
+        TextEditorContentView(path: $path)
     }
 }
 
-private struct WriterContentView: View {
+private struct TextEditorContentView: View {
     @State private var nsAttributedText: NSAttributedString = .init(string: "")
     @State private var isFirstResponder: Bool = false
     @Binding private var path: NavigationPath
@@ -44,7 +44,7 @@ private struct WriterContentView: View {
 #if DEBUG
     #Preview {
         NavigationRootView { path in
-            WriterView(path: path)
+            TextEditorView(path: path)
         }
         .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
         .environment(\.storeRepository, MockStoreRepository.shared)
