@@ -25,7 +25,6 @@ public final class HorizontalWordCollectionView: UICollectionView {
         flowLayout.scrollDirection = .horizontal
         flowLayout.minimumInteritemSpacing = 4
         flowLayout.sectionInset = .init(top: 0, left: 8, bottom: 0, right: 8)
-        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         return flowLayout
     }
 
@@ -34,5 +33,13 @@ public final class HorizontalWordCollectionView: UICollectionView {
         showsVerticalScrollIndicator = false
         backgroundColor = .clear
         contentInsetAdjustmentBehavior = .never
+    }
+}
+
+extension HorizontalWordCollectionView: UICollectionViewDelegateFlowLayout {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let height = collectionView.bounds.height
+        // TODO: width を flexible にする
+        return CGSize(width: height, height: height)
     }
 }
