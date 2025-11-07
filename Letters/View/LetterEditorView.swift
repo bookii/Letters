@@ -1,5 +1,5 @@
 //
-//  TextEditorView.swift
+//  LetterEditorView.swift
 //  Letters
 //
 //  Created by mizznoff on 2025/11/03.
@@ -8,8 +8,7 @@
 import SwiftData
 import SwiftUI
 
-public struct TextEditorView: View {
-    @Environment(\.storeRepository) private var storeRepository
+public struct LetterEditorView: View {
     @Binding private var path: NavigationPath
 
     public init(path: Binding<NavigationPath>) {
@@ -17,23 +16,23 @@ public struct TextEditorView: View {
     }
 
     public var body: some View {
-        TextEditorContentView(path: $path, storeRepository: storeRepository)
+        LetterEditorContentView(path: $path)
     }
 }
 
-private struct TextEditorContentView: View {
-    @StateObject private var viewModel: TextEditorViewModel
+private struct LetterEditorContentView: View {
+    @StateObject private var viewModel: LetterEditorViewModel
     @State private var nsAttributedText: NSAttributedString = .init(string: "")
     @State private var isFirstResponder: Bool = false
     @Binding private var path: NavigationPath
 
-    fileprivate init(path: Binding<NavigationPath>, storeRepository: StoreRepositoryProtocol) {
+    fileprivate init(path: Binding<NavigationPath>) {
         _path = path
-        _viewModel = .init(wrappedValue: .init(storeRepository: storeRepository))
+        _viewModel = .init(wrappedValue: .init())
     }
 
     fileprivate var body: some View {
-        TextViewRepresentable(nsAttributedText: $nsAttributedText, isFirstResponder: $isFirstResponder)
+        ImageConvertiveTextView(isFirstResponder: $isFirstResponder)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(16)
             .frame(maxHeight: .infinity)
@@ -47,9 +46,8 @@ private struct TextEditorContentView: View {
 #if DEBUG
     #Preview {
         NavigationRootView { path in
-            TextEditorView(path: path)
+            LetterEditorView(path: path)
         }
-        .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
         .environment(\.storeRepository, MockStoreRepository.shared)
     }
 #endif
