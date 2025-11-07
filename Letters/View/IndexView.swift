@@ -53,7 +53,7 @@ private struct IndexContentView: View {
                 case let .analyzer(uiImage):
                     AnalyzerView(path: $path, uiImage: uiImage)
                 case .textEditor:
-                    TextEditorView(path: $path)
+                    LetterEditorView(path: $path)
                 }
             }
             .toolbar {
