@@ -37,7 +37,7 @@ public final class HorizontalWordCollectionView: UICollectionView {
 }
 
 extension HorizontalWordCollectionView: UICollectionViewDelegateFlowLayout {
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    public func collectionView(_ collectionView: UICollectionView, layout _: UICollectionViewLayout, sizeForItemAt _: IndexPath) -> CGSize {
         let height = collectionView.bounds.height
         // TODO: width を flexible にする
         return CGSize(width: height, height: height)
