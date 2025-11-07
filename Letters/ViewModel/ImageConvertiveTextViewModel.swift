@@ -100,9 +100,10 @@ extension ImageConvertiveTextViewModel: UICollectionViewDataSource {
 
 extension ImageConvertiveTextViewModel: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let word = candidateWords.first(where: { $0.id == candidateWords[indexPath.row].id }) else {
+        guard candidateWords.indices.contains(indexPath.row) else {
             return
         }
+        let word = candidateWords[indexPath.row]
         replaceMarkedTextWithImage(selectedWord: word)
         candidateWords = []
         collectionView.reloadData()
