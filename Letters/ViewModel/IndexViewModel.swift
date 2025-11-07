@@ -41,7 +41,7 @@ public final class IndexViewModel: NSObject, ObservableObject {
     }
 
     // TODO: 動作確認が完了したら 20 ぐらいの適切な値にしておく
-    private let limit: Int = 2
+    private let limit: Int = 20
     private var offset: Int = 0
     private var hasNoMoreWords: Bool = false
     private let storeRepository: StoreRepositoryProtocol
