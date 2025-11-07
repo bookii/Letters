@@ -24,7 +24,7 @@ public struct IndexView: View {
 private struct IndexContentView: View {
     private enum Destination: Hashable {
         case analyzer(uiImage: UIImage)
-        case writer
+        case textEditor
     }
 
     @StateObject private var viewModel: IndexViewModel
@@ -36,7 +36,7 @@ private struct IndexContentView: View {
     }
 
     fileprivate var body: some View {
-        WordsScrollView(words: viewModel.words ?? [])
+        WordsScrollFlowView(words: viewModel.words ?? [])
             .onLastWordAppear {
                 viewModel.loadMoreWords()
             }
@@ -52,14 +52,14 @@ private struct IndexContentView: View {
                 switch destination {
                 case let .analyzer(uiImage):
                     AnalyzerView(path: $path, uiImage: uiImage)
-                case .writer:
-                    WriterView(path: $path)
+                case .textEditor:
+                    LetterEditorView(path: $path)
                 }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        path.append(Destination.writer)
+                        path.append(Destination.textEditor)
                     } label: {
                         Image(systemName: "square.and.pencil")
                     }
