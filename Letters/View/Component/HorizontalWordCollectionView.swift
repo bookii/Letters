@@ -25,6 +25,7 @@ public final class HorizontalWordCollectionView: UICollectionView {
         flowLayout.scrollDirection = .horizontal
         flowLayout.minimumInteritemSpacing = 4
         flowLayout.sectionInset = .init(top: 0, left: 8, bottom: 0, right: 8)
+        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         return flowLayout
     }
 
