@@ -67,15 +67,15 @@ public final class ImageConvertiveTextViewModel: NSObject, ObservableObject {
         }
 
         let nsRange = NSRange(range, in: fullText)
-        let attachament = NSTextAttachment()
-        attachament.image = .init(data: selectedWord.imageData)
+        let attachment = NSTextAttachment()
+        attachment.image = .init(data: selectedWord.imageData)
 
         let imageSize = uiImage.size
         let height: CGFloat = 32
         let scale = height / imageSize.height
-        attachament.bounds = CGRect(x: 0, y: -8, width: imageSize.width * scale, height: height)
+        attachment.bounds = CGRect(x: 0, y: -8, width: imageSize.width * scale, height: height)
 
-        let imageAttributedString = NSAttributedString(attachment: attachament)
+        let imageAttributedString = NSAttributedString(attachment: attachment)
         mutableAttributedText.replaceCharacters(in: nsRange, with: imageAttributedString)
 
         fullAttributedText = mutableAttributedText
