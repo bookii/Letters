@@ -28,6 +28,7 @@ public struct WordsScrollFlowView: View {
                                 guard word.id == words.last?.id else {
                                     return
                                 }
+                                // TODO: 2回目以降に読み込まない不具合の修正
                                 onLastWordAppearAction?()
                             }
                     }
