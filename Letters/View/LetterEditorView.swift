@@ -21,9 +21,7 @@ public struct LetterEditorView: View {
 }
 
 private struct LetterEditorContentView: View {
-    @Environment(\.displayScale) private var displayScale
     @StateObject private var viewModel: LetterEditorViewModel
-    @State private var nsAttributedText: NSAttributedString = .init(string: "")
     @State private var isFirstResponder: Bool = false
     @State private var shouldRender: Bool = false
     @Binding private var path: NavigationPath
