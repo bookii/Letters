@@ -36,40 +36,46 @@ private struct IndexContentView: View {
     }
 
     fileprivate var body: some View {
-        WordsScrollFlowView(words: viewModel.words ?? [])
-            .onLastWordAppear {
-                viewModel.loadMoreWords()
+        VStack(spacing: 8) {
+            if let lettersCount = viewModel.lettersCount {
+                Text("集めた文字数: \(String(lettersCount))")
+                    .font(.system(size: 24))
             }
-            .onAppear {
-                viewModel.reloadWords()
+            WordsScrollFlowView(words: viewModel.words ?? [])
+                .onLastWordAppear {
+                    viewModel.loadMoreWords()
+                }
+        }
+        .onAppear {
+            viewModel.reloadWords()
+        }
+        .onReceive(viewModel.$uiImage) { uiImage in
+            if let uiImage {
+                path.append(Destination.analyzer(uiImage: uiImage))
             }
-            .onReceive(viewModel.$uiImage) { uiImage in
-                if let uiImage {
-                    path.append(Destination.analyzer(uiImage: uiImage))
+        }
+        .navigationDestination(for: Destination.self) { destination in
+            switch destination {
+            case let .analyzer(uiImage):
+                AnalyzerView(path: $path, uiImage: uiImage)
+            case .textEditor:
+                LetterEditorView(path: $path)
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    path.append(Destination.textEditor)
+                } label: {
+                    Image(systemName: "square.and.pencil")
                 }
             }
-            .navigationDestination(for: Destination.self) { destination in
-                switch destination {
-                case let .analyzer(uiImage):
-                    AnalyzerView(path: $path, uiImage: uiImage)
-                case .textEditor:
-                    LetterEditorView(path: $path)
+            ToolbarItem(placement: .topBarTrailing) {
+                PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
+                    Label("", systemImage: "plus")
                 }
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        path.append(Destination.textEditor)
-                    } label: {
-                        Image(systemName: "square.and.pencil")
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
-                        Label("", systemImage: "plus")
-                    }
-                }
-            }
+        }
     }
 }
 
