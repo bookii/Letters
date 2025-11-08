@@ -68,12 +68,6 @@ private struct LetterEditorContentView: View {
                 Button("閉じる") {
                     dismiss()
                 }
-            } message: {
-                if let savedImage = viewModel.savedImage {
-                    Image(uiImage: savedImage)
-                        .resizable()
-                        .scaledToFit()
-                }
             }
             .sheet(isPresented: $isShareSheetPresented) {
                 if let savedImage = viewModel.savedImage {

@@ -19,7 +19,7 @@ public final class LetterEditorViewModel: NSObject, ObservableObject {
         UIImageWriteToSavedPhotosAlbum(uiImage, self, #selector(onSaveImage(_:didFinishSavingWithError:contextInfo:)), nil)
     }
 
-    @objc private func onSaveImage(_: UIImage, didFinishSavingWithError error: Error?, contextInfo _: UnsafeRawPointer) {
+    @objc private func onSaveImage(_: UIImage, didFinishSavingWithError error: Error?, contextInfo _: UnsafeMutableRawPointer) {
         if error == nil {
             savedImage = savingImage
         }
