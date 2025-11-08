@@ -21,9 +21,12 @@ public struct LetterEditorView: View {
 }
 
 private struct LetterEditorContentView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: LetterEditorViewModel
     @State private var isFirstResponder: Bool = false
     @State private var shouldRender: Bool = false
+    @State private var isSaveCompletionAlertPresented: Bool = false
+    @State private var isShareSheetPresented: Bool = false
     @Binding private var path: NavigationPath
 
     fileprivate init(path: Binding<NavigationPath>) {
@@ -43,7 +46,7 @@ private struct LetterEditorContentView: View {
                 Color.gray
                     .ignoresSafeArea()
             }
-            .navigationTitle("メッセージの作成")
+            .navigationTitle("レターの編集")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -53,8 +56,29 @@ private struct LetterEditorContentView: View {
                     }
                 }
             }
-            .alert("メッセージ画像を保存しました", isPresented: $viewModel.isSaveCompletionAlertPresented) {
-                Button("OK") {}
+            .onReceive(viewModel.$savedImage) { newValue in
+                if newValue != nil {
+                    isSaveCompletionAlertPresented = true
+                }
+            }
+            .alert("レターを保存しました", isPresented: $isSaveCompletionAlertPresented) {
+                Button("共有する") {
+                    isShareSheetPresented = true
+                }
+                Button("閉じる") {
+                    dismiss()
+                }
+            } message: {
+                if let savedImage = viewModel.savedImage {
+                    Image(uiImage: savedImage)
+                        .resizable()
+                        .scaledToFit()
+                }
+            }
+            .sheet(isPresented: $isShareSheetPresented) {
+                if let savedImage = viewModel.savedImage {
+                    ShareImageActivityView(uiImage: savedImage)
+                }
             }
     }
 }
