@@ -22,17 +22,15 @@ public final class AnalyzerViewModel: ObservableObject {
         self.storeRepository = storeRepository
     }
 
-    public func analyzeIntoWords(uiImage: UIImage) {
-        Task {
-            do {
-                let words = try await analyzerRepository.analyzeIntoWords(uiImage: uiImage)
-                await MainActor.run {
-                    self.words = words
-                }
-            } catch {
-                await MainActor.run {
-                    self.error = error
-                }
+    public func analyzeIntoWords(uiImage: UIImage) async {
+        do {
+            let words = try await analyzerRepository.analyzeIntoWords(uiImage: uiImage)
+            await MainActor.run {
+                self.words = words
+            }
+        } catch {
+            await MainActor.run {
+                self.error = error
             }
         }
     }
