@@ -46,11 +46,10 @@ private struct AnalyzerContentView: View {
                     .padding(16)
             } else {
                 ProgressView()
-                    .onAppear {
-                        viewModel.analyzeIntoWords(uiImage: uiImage)
-                    }
             }
         }
+        .navigationTitle("文字の採集")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("保存") {
@@ -58,6 +57,9 @@ private struct AnalyzerContentView: View {
                     dismiss()
                 }
             }
+        }
+        .task {
+            await viewModel.analyzeIntoWords(uiImage: uiImage)
         }
     }
 }
