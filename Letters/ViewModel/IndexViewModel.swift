@@ -14,11 +14,12 @@ import UIKit
 public final class IndexViewModel: NSObject, ObservableObject {
     @Published public private(set) var words: [Word]? {
         didSet {
-            lettersCount = words?.reduce(0, { sum, word in
+            lettersCount = words?.reduce(0) { sum, word in
                 sum + word.text.count
-            })
+            }
         }
     }
+
     @Published public private(set) var lettersCount: Int?
     @Published public private(set) var error: Error?
     @Published public var uiImage: UIImage?

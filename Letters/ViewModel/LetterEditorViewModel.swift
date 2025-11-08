@@ -10,13 +10,19 @@ import Foundation
 import SwiftUI
 
 public final class LetterEditorViewModel: NSObject, ObservableObject {
-    @Published public var isSaveCompletionAlertPresented: Bool = false
+    @Published public private(set) var savedImage: UIImage?
+    @Published public private(set) var error: Error?
+    private var savingImage: UIImage?
 
     public func saveImage(_ uiImage: UIImage) {
-        UIImageWriteToSavedPhotosAlbum(uiImage, self, #selector(onSaveImage), nil)
+        savingImage = uiImage
+        UIImageWriteToSavedPhotosAlbum(uiImage, self, #selector(onSaveImage(_:didFinishSavingWithError:contextInfo:)), nil)
     }
 
-    @objc public func onSaveImage(_: UIImage, didFinishSavingWithError _: Error?, contextInfo _: UnsafeMutableRawPointer?) {
-        isSaveCompletionAlertPresented = true
+    @objc private func onSaveImage(_: UIImage, didFinishSavingWithError error: Error?, contextInfo _: UnsafeMutableRawPointer) {
+        if error == nil {
+            savedImage = savingImage
+        }
+        self.error = error
     }
 }
