@@ -95,8 +95,7 @@ public final class StoreRepository: StoreRepositoryProtocol {
 
         private init() {
             do {
-                // TODO: 実装が一通り完了したら inStoredInMemoryOnly = false にする
-                let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+                let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
                 modelContainer = try ModelContainer(for: Word.self, configurations: configuration)
             } catch {
                 fatalError("Failed to initialize ModelContainer: \(error)")
