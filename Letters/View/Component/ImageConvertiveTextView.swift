@@ -12,23 +12,38 @@ import UIKit
 
 public struct ImageConvertiveTextView: View {
     @Environment(\.storeRepository) private var storeRepository
+    private var onRenderImageAction: ((UIImage) -> Void)?
     @Binding private var isFirstResponder: Bool
+    @Binding private var shouldRender: Bool
 
-    public init(isFirstResponder: Binding<Bool>) {
+    public init(isFirstResponder: Binding<Bool>, shouldRender: Binding<Bool>) {
         _isFirstResponder = isFirstResponder
+        _shouldRender = shouldRender
     }
 
     public var body: some View {
-        ImageConvertiveTextContentView(isFirstResponder: $isFirstResponder, storeRepository: storeRepository)
+        ImageConvertiveTextContentView(isFirstResponder: $isFirstResponder, shouldRender: $shouldRender, storeRepository: storeRepository)
+            .onRenderImage { uiImage in
+                onRenderImageAction?(uiImage)
+            }
+    }
+
+    public func onRenderImage(perform action: @escaping (UIImage) -> Void) -> Self {
+        var view = self
+        view.onRenderImageAction = action
+        return view
     }
 }
 
 private struct ImageConvertiveTextContentView: UIViewRepresentable {
+    private var onRenderImageAction: ((UIImage) -> Void)?
     @StateObject fileprivate var viewModel: ImageConvertiveTextViewModel
     @Binding private var isFirstResponder: Bool
+    @Binding private var shouldRender: Bool
 
-    fileprivate init(isFirstResponder: Binding<Bool>, storeRepository: StoreRepositoryProtocol) {
+    fileprivate init(isFirstResponder: Binding<Bool>, shouldRender: Binding<Bool>, storeRepository: StoreRepositoryProtocol) {
         _isFirstResponder = isFirstResponder
+        _shouldRender = shouldRender
         _viewModel = .init(wrappedValue: .init(storeRepository: storeRepository))
     }
 
@@ -54,7 +69,7 @@ private struct ImageConvertiveTextContentView: UIViewRepresentable {
         return textView
     }
 
-    fileprivate func updateUIView(_ uiView: UITextView, context _: Context) {
+    fileprivate func updateUIView(_ uiView: UITextView, context: Context) {
         Task { @MainActor in
             if isFirstResponder, !uiView.isFirstResponder {
                 uiView.becomeFirstResponder()
@@ -62,10 +77,24 @@ private struct ImageConvertiveTextContentView: UIViewRepresentable {
                 uiView.resignFirstResponder()
             }
         }
+        if shouldRender {
+            if let uiImage = context.coordinator.render() {
+                onRenderImageAction?(uiImage)
+            }
+            Task { @MainActor in
+                shouldRender = false
+            }
+        }
     }
 
     fileprivate func makeCoordinator() -> Coordinator {
         Coordinator(self)
+    }
+
+    fileprivate func onRenderImage(perform action: @escaping (UIImage) -> Void) -> Self {
+        var view = self
+        view.onRenderImageAction = action
+        return view
     }
 
     fileprivate class Coordinator: NSObject, UITextViewDelegate {
@@ -83,8 +112,25 @@ private struct ImageConvertiveTextContentView: UIViewRepresentable {
                 }
                 if textView.attributedText != newValue {
                     textView.attributedText = newValue
+                    textView.font = .systemFont(ofSize: 24)
                 }
             }.store(in: &cancellables)
+        }
+
+        fileprivate func render() -> UIImage? {
+            guard let textView else {
+                return nil
+            }
+            let selectedTextRange = textView.selectedTextRange
+            textView.selectedTextRange = nil
+            let width = textView.bounds.width
+            let height = textView.sizeThatFits(.init(width: width, height: .greatestFiniteMagnitude)).height
+            let render = UIGraphicsImageRenderer(size: .init(width: width, height: height))
+            let image = render.image { context in
+                textView.layer.render(in: context.cgContext)
+                textView.selectedTextRange = selectedTextRange
+            }
+            return image
         }
 
         fileprivate func textViewDidChange(_ textView: UITextView) {
@@ -109,8 +155,9 @@ private struct ImageConvertiveTextContentView: UIViewRepresentable {
     #Preview {
         @Previewable @State var nsAttributedText = NSAttributedString(string: "")
         @Previewable @State var isFirstResponder = false
+        @Previewable @State var shouldRender = false
 
-        ImageConvertiveTextView(isFirstResponder: $isFirstResponder)
+        ImageConvertiveTextView(isFirstResponder: $isFirstResponder, shouldRender: $shouldRender)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(16)
             .background {
