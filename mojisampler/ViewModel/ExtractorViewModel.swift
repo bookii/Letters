@@ -14,17 +14,17 @@ import Vision
 public final class ExtractorViewModel: ObservableObject {
     @Published public private(set) var words: [Word]?
     @Published public private(set) var error: Error?
-    private let extractorRepository: ExtractorRepositoryProtocol
-    private let storeRepository: StoreRepositoryProtocol
+    private let extractorService: ExtractorServiceProtocol
+    private let storeService: StoreServiceProtocol
 
-    public init(extractorRepository: ExtractorRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
-        self.extractorRepository = extractorRepository
-        self.storeRepository = storeRepository
+    public init(extractorService: ExtractorServiceProtocol, storeService: StoreServiceProtocol) {
+        self.extractorService = extractorService
+        self.storeService = storeService
     }
 
     public func extractWords(from uiImage: UIImage) async {
         do {
-            let words = try await extractorRepository.extractWords(from: uiImage)
+            let words = try await extractorService.extractWords(from: uiImage)
             await MainActor.run {
                 self.words = words
             }
@@ -41,7 +41,7 @@ public final class ExtractorViewModel: ObservableObject {
             return
         }
         do {
-            try storeRepository.save(words: words)
+            try storeService.save(words: words)
         } catch {
             self.error = error
         }

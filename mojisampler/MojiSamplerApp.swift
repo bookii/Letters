@@ -17,7 +17,7 @@ public struct MojisamplerApp: App {
                 IndexView(path: path)
             }
         }
-        .environment(\.extractorRepository, ExtractorRepository.shared)
-        .environment(\.storeRepository, StoreRepository.shared)
+        .environment(\.extractorService, ExtractorService.shared)
+        .environment(\.storeService, StoreService.shared)
     }
 }

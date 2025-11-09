@@ -10,8 +10,8 @@ import SwiftUI
 import UIKit
 
 public struct ExtractorView: View {
-    @Environment(\.extractorRepository) private var extractorRepository
-    @Environment(\.storeRepository) private var storeRepository
+    @Environment(\.extractorService) private var extractorService
+    @Environment(\.storeService) private var storeService
     @Binding private var path: NavigationPath
     private var uiImage: UIImage
 
@@ -21,7 +21,7 @@ public struct ExtractorView: View {
     }
 
     public var body: some View {
-        ExtractorContentView(uiImage: uiImage, extractorRepository: extractorRepository, storeRepository: storeRepository)
+        ExtractorContentView(uiImage: uiImage, extractorService: extractorService, storeService: storeService)
     }
 }
 
@@ -31,9 +31,9 @@ private struct ExtractorContentView: View {
     @State private var viewWidth: CGFloat = 0
     private let uiImage: UIImage
 
-    fileprivate init(uiImage: UIImage, extractorRepository: ExtractorRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
+    fileprivate init(uiImage: UIImage, extractorService: ExtractorServiceProtocol, storeService: StoreServiceProtocol) {
         self.uiImage = uiImage
-        _viewModel = .init(wrappedValue: .init(extractorRepository: extractorRepository, storeRepository: storeRepository))
+        _viewModel = .init(wrappedValue: .init(extractorService: extractorService, storeService: storeService))
     }
 
     fileprivate var body: some View {
@@ -74,9 +74,9 @@ private struct ExtractorContentView: View {
                 ExtractorView(path: path, uiImage: uiImage)
             }
         }
-        .modelContainer(MockStoreRepository.shared.modelContainer)
-        .environment(\.extractorRepository, MockExtractorRepository.shared)
-        .environment(\.storeRepository, MockStoreRepository.shared)
+        .modelContainer(MockStoreService.shared.modelContainer)
+        .environment(\.extractorService, MockExtractorService.shared)
+        .environment(\.storeService, MockStoreService.shared)
         .task {
             uiImage = await UIImage.mockImage()
         }

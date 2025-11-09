@@ -19,10 +19,10 @@ public final class ImageConvertiveTextViewModel: NSObject, ObservableObject {
     public var onReplaceMarkedTextWithImage: ((Word) -> Void)?
 
     fileprivate let cellIdentifier = "HorizontalWordCollectionViewCell"
-    private let storeRepository: StoreRepositoryProtocol
+    private let storeService: StoreServiceProtocol
 
-    public init(storeRepository: StoreRepositoryProtocol) {
-        self.storeRepository = storeRepository
+    public init(storeService: StoreServiceProtocol) {
+        self.storeService = storeService
     }
 
     public func createWordCollectionView(frame: CGRect) -> HorizontalWordCollectionView {
@@ -47,7 +47,7 @@ public final class ImageConvertiveTextViewModel: NSObject, ObservableObject {
             candidateWords = []
         } else {
             do {
-                candidateWords = try storeRepository.fetchWords(prefix: markedText, sortBy: [.init(keyPath: \.text, order: .desc)], limit: 10, offset: 0)
+                candidateWords = try storeService.fetchWords(prefix: markedText, sortBy: [.init(keyPath: \.text, order: .desc)], limit: 10, offset: 0)
             } catch {
                 candidateWords = []
                 self.error = error

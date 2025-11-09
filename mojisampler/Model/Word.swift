@@ -40,16 +40,25 @@ public extension Word {
         }
 
         private static func loadMockWords() async -> [Word] {
-            return [
-                .init(text: "コメント",
-                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/9d49450a3a24b0e7bf1ac1617c577bb0.png")!)!.jpegData(compressionQuality: 0.9)!),
-                .init(text: "ほぼ",
-                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/74a97a6d90825636b2ee1a49b1d2e8e3.png")!)!.jpegData(compressionQuality: 0.9)!),
-                .init(text: "全部",
-                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/e94048ab44be8f17ef37a60e9581dd29.png")!)!.jpegData(compressionQuality: 0.9)!),
-                .init(text: "読みます",
-                      imageData: try! await UIImage(url: .init(string: "https://i.gyazo.com/323175cb4113ff92e930b9f1a6c93ab5.png")!)!.jpegData(compressionQuality: 0.9)!),
+            let urlDict: [String: URL] = [
+                "コメント": .init(string: "https://i.gyazo.com/9d49450a3a24b0e7bf1ac1617c577bb0.png")!,
+                "ほぼ": .init(string: "https://i.gyazo.com/74a97a6d90825636b2ee1a49b1d2e8e3.png")!,
+                "全部": .init(string: "https://i.gyazo.com/e94048ab44be8f17ef37a60e9581dd29.png")!,
+                "読みます": .init(string: "https://i.gyazo.com/323175cb4113ff92e930b9f1a6c93ab5.png")!,
             ]
+            var words: [Word] = []
+            for (text, url) in urlDict {
+                do {
+                    if let image = try await UIImage(url: url),
+                       let imageData = image.jpegData(compressionQuality: 0.9)
+                    {
+                        words.append(.init(text: text, imageData: imageData))
+                    }
+                } catch {
+                    continue
+                }
+            }
+            return words
         }
     #endif
 }
