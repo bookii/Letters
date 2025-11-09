@@ -15,7 +15,6 @@ public struct IndexView: View {
         case textTextEditor
     }
 
-    @Environment(\.storeService) private var storeService
     @Query private var words: [Word]
     @State public var pickerItem: PhotosPickerItem?
     @Binding private var path: NavigationPath
