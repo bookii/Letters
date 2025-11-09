@@ -12,7 +12,7 @@ import SwiftUI
 public struct IndexView: View {
     private enum Destination: Hashable {
         case extractor(uiImage: UIImage)
-        case textTextEditor
+        case textEditor
     }
 
     @Query private var words: [Word]
@@ -48,14 +48,14 @@ public struct IndexView: View {
             switch destination {
             case let .extractor(uiImage):
                 ExtractorView(path: $path, uiImage: uiImage)
-            case .textTextEditor:
+            case .textEditor:
                 TextEditorView(path: $path)
             }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    path.append(Destination.textTextEditor)
+                    path.append(Destination.textEditor)
                 } label: {
                     Image(systemName: "square.and.pencil")
                 }
