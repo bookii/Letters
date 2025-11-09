@@ -1,6 +1,6 @@
 //
 //  UIImage.swift
-//  Letters
+//  mojisampler
 //
 //  Created by mizznoff on 2025/11/02.
 //

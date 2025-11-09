@@ -1,6 +1,6 @@
 //
 //  AnalyzerView.swift
-//  Letters
+//  mojisampler
 //
 //  Created by mizznoff on 2025/10/30.
 //
