@@ -1,5 +1,5 @@
 //
-//  AnalyzerViewModel.swift
+//  SamplingViewModel.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/10/30.
@@ -11,13 +11,13 @@ import NaturalLanguage
 import UIKit
 import Vision
 
-public final class AnalyzerViewModel: ObservableObject {
+public final class SamplingViewModel: ObservableObject {
     @Published public private(set) var words: [Word]?
     @Published public private(set) var error: Error?
-    private let analyzerRepository: AnalyzerRepositoryProtocol
+    private let analyzerRepository: SamplingRepositoryProtocol
     private let storeRepository: StoreRepositoryProtocol
 
-    public init(analyzerRepository: AnalyzerRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
+    public init(analyzerRepository: SamplingRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
         self.analyzerRepository = analyzerRepository
         self.storeRepository = storeRepository
     }

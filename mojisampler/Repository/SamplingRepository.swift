@@ -1,5 +1,5 @@
 //
-//  AnalyzerRepository.swift
+//  SamplingRepository.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/11/02.
@@ -12,15 +12,15 @@ import UIKit
 import Vision
 
 extension EnvironmentValues {
-    @Entry var analyzerRepository: AnalyzerRepositoryProtocol = AnalyzerRepository.shared
+    @Entry var analyzerRepository: SamplingRepositoryProtocol = SamplingRepository.shared
 }
 
-public protocol AnalyzerRepositoryProtocol {
+public protocol SamplingRepositoryProtocol {
     func analyzeIntoWords(uiImage: UIImage) async throws -> [Word]
 }
 
-public final class AnalyzerRepository: AnalyzerRepositoryProtocol {
-    public static let shared = AnalyzerRepository()
+public final class SamplingRepository: SamplingRepositoryProtocol {
+    public static let shared = SamplingRepository()
 
     private init() {}
 
@@ -95,8 +95,8 @@ public final class AnalyzerRepository: AnalyzerRepositoryProtocol {
 }
 
 #if DEBUG
-    public final class MockAnalyzerRepository: AnalyzerRepositoryProtocol {
-        public static let shared = MockAnalyzerRepository()
+    public final class MockSamplingRepository: SamplingRepositoryProtocol {
+        public static let shared = MockSamplingRepository()
 
         private init() {}
 

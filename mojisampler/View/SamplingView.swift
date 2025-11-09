@@ -1,5 +1,5 @@
 //
-//  AnalyzerView.swift
+//  SamplingView.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/10/30.
@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
-public struct AnalyzerView: View {
+public struct SamplingView: View {
     @Environment(\.analyzerRepository) private var analyzerRepository
     @Environment(\.storeRepository) private var storeRepository
     @Binding private var path: NavigationPath
@@ -21,17 +21,17 @@ public struct AnalyzerView: View {
     }
 
     public var body: some View {
-        AnalyzerContentView(uiImage: uiImage, analyzerRepository: analyzerRepository, storeRepository: storeRepository)
+        SamplingContentView(uiImage: uiImage, analyzerRepository: analyzerRepository, storeRepository: storeRepository)
     }
 }
 
-private struct AnalyzerContentView: View {
+private struct SamplingContentView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel: AnalyzerViewModel
+    @StateObject private var viewModel: SamplingViewModel
     @State private var viewWidth: CGFloat = 0
     private let uiImage: UIImage
 
-    fileprivate init(uiImage: UIImage, analyzerRepository: AnalyzerRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
+    fileprivate init(uiImage: UIImage, analyzerRepository: SamplingRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
         self.uiImage = uiImage
         _viewModel = .init(wrappedValue: .init(analyzerRepository: analyzerRepository, storeRepository: storeRepository))
     }
@@ -71,11 +71,11 @@ private struct AnalyzerContentView: View {
         @Previewable @State var uiImage: UIImage? = nil
         NavigationRootView { path in
             if let uiImage {
-                AnalyzerView(path: path, uiImage: uiImage)
+                SamplingView(path: path, uiImage: uiImage)
             }
         }
         .modelContainer(MockStoreRepository.shared.modelContainer)
-        .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
+        .environment(\.analyzerRepository, MockSamplingRepository.shared)
         .environment(\.storeRepository, MockStoreRepository.shared)
         .task {
             uiImage = await UIImage.mockImage()

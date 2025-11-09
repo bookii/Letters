@@ -57,7 +57,7 @@ private struct IndexContentView: View {
         .navigationDestination(for: Destination.self) { destination in
             switch destination {
             case let .analyzer(uiImage):
-                AnalyzerView(path: $path, uiImage: uiImage)
+                SamplingView(path: $path, uiImage: uiImage)
             case .textEditor:
                 LetterEditorView(path: $path)
             }
@@ -85,7 +85,7 @@ private struct IndexContentView: View {
         NavigationRootView { path in
             if hasPreloaded {
                 IndexView(path: path)
-                    .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
+                    .environment(\.analyzerRepository, MockSamplingRepository.shared)
                     .environment(\.storeRepository, MockStoreRepository.shared)
 
             } else {
