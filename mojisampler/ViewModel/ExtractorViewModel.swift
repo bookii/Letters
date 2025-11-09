@@ -1,5 +1,5 @@
 //
-//  AnalyzerViewModel.swift
+//  ExtractorViewModel.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/10/30.
@@ -11,20 +11,20 @@ import NaturalLanguage
 import UIKit
 import Vision
 
-public final class AnalyzerViewModel: ObservableObject {
+public final class ExtractorViewModel: ObservableObject {
     @Published public private(set) var words: [Word]?
     @Published public private(set) var error: Error?
-    private let analyzerRepository: AnalyzerRepositoryProtocol
+    private let extractorRepository: ExtractorRepositoryProtocol
     private let storeRepository: StoreRepositoryProtocol
 
-    public init(analyzerRepository: AnalyzerRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
-        self.analyzerRepository = analyzerRepository
+    public init(extractorRepository: ExtractorRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
+        self.extractorRepository = extractorRepository
         self.storeRepository = storeRepository
     }
 
-    public func analyzeIntoWords(uiImage: UIImage) async {
+    public func extractWords(from uiImage: UIImage) async {
         do {
-            let words = try await analyzerRepository.analyzeIntoWords(uiImage: uiImage)
+            let words = try await extractorRepository.extractWords(from: uiImage)
             await MainActor.run {
                 self.words = words
             }

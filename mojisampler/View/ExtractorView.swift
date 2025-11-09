@@ -1,5 +1,5 @@
 //
-//  AnalyzerView.swift
+//  ExtractorView.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/10/30.
@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 import UIKit
 
-public struct AnalyzerView: View {
-    @Environment(\.analyzerRepository) private var analyzerRepository
+public struct ExtractorView: View {
+    @Environment(\.extractorRepository) private var extractorRepository
     @Environment(\.storeRepository) private var storeRepository
     @Binding private var path: NavigationPath
     private var uiImage: UIImage
@@ -21,19 +21,19 @@ public struct AnalyzerView: View {
     }
 
     public var body: some View {
-        AnalyzerContentView(uiImage: uiImage, analyzerRepository: analyzerRepository, storeRepository: storeRepository)
+        ExtractorContentView(uiImage: uiImage, extractorRepository: extractorRepository, storeRepository: storeRepository)
     }
 }
 
-private struct AnalyzerContentView: View {
+private struct ExtractorContentView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel: AnalyzerViewModel
+    @StateObject private var viewModel: ExtractorViewModel
     @State private var viewWidth: CGFloat = 0
     private let uiImage: UIImage
 
-    fileprivate init(uiImage: UIImage, analyzerRepository: AnalyzerRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
+    fileprivate init(uiImage: UIImage, extractorRepository: ExtractorRepositoryProtocol, storeRepository: StoreRepositoryProtocol) {
         self.uiImage = uiImage
-        _viewModel = .init(wrappedValue: .init(analyzerRepository: analyzerRepository, storeRepository: storeRepository))
+        _viewModel = .init(wrappedValue: .init(extractorRepository: extractorRepository, storeRepository: storeRepository))
     }
 
     fileprivate var body: some View {
@@ -48,7 +48,7 @@ private struct AnalyzerContentView: View {
                 ProgressView()
             }
         }
-        .navigationTitle("文字の採集")
+        .navigationTitle("文字のサンプリング")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -59,7 +59,7 @@ private struct AnalyzerContentView: View {
             }
         }
         .task {
-            await viewModel.analyzeIntoWords(uiImage: uiImage)
+            await viewModel.extractWords(from: uiImage)
         }
     }
 }
@@ -71,11 +71,11 @@ private struct AnalyzerContentView: View {
         @Previewable @State var uiImage: UIImage? = nil
         NavigationRootView { path in
             if let uiImage {
-                AnalyzerView(path: path, uiImage: uiImage)
+                ExtractorView(path: path, uiImage: uiImage)
             }
         }
         .modelContainer(MockStoreRepository.shared.modelContainer)
-        .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
+        .environment(\.extractorRepository, MockExtractorRepository.shared)
         .environment(\.storeRepository, MockStoreRepository.shared)
         .task {
             uiImage = await UIImage.mockImage()

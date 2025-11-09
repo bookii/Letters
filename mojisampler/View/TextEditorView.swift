@@ -1,5 +1,5 @@
 //
-//  LetterEditorView.swift
+//  TextEditorView.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/11/03.
@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-public struct LetterEditorView: View {
+public struct TextEditorView: View {
     @Binding private var path: NavigationPath
 
     public init(path: Binding<NavigationPath>) {
@@ -16,13 +16,13 @@ public struct LetterEditorView: View {
     }
 
     public var body: some View {
-        LetterEditorContentView(path: $path)
+        TextEditorContentView(path: $path)
     }
 }
 
-private struct LetterEditorContentView: View {
+private struct TextEditorContentView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel: LetterEditorViewModel
+    @StateObject private var viewModel: TextEditorViewModel
     @State private var isFirstResponder: Bool = false
     @State private var shouldRender: Bool = false
     @State private var isSaveCompletionAlertPresented: Bool = false
@@ -46,7 +46,7 @@ private struct LetterEditorContentView: View {
                 Color.gray
                     .ignoresSafeArea()
             }
-            .navigationTitle("レターの編集")
+            .navigationTitle("テキストの作成")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -80,7 +80,7 @@ private struct LetterEditorContentView: View {
 #if DEBUG
     #Preview {
         NavigationRootView { path in
-            LetterEditorView(path: path)
+            TextEditorView(path: path)
         }
         .environment(\.storeRepository, MockStoreRepository.shared)
     }
