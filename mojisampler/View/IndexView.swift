@@ -6,10 +6,18 @@
 //
 
 import PhotosUI
+import SwiftData
 import SwiftUI
 
 public struct IndexView: View {
+    private enum Destination: Hashable {
+        case extractor(uiImage: UIImage)
+        case textTextEditor
+    }
+
     @Environment(\.storeService) private var storeService
+    @Query private var words: [Word]
+    @State public var pickerItem: PhotosPickerItem?
     @Binding private var path: NavigationPath
 
     public init(path: Binding<NavigationPath>) {
@@ -17,41 +25,24 @@ public struct IndexView: View {
     }
 
     public var body: some View {
-        IndexContentView(path: $path, storeService: storeService)
-    }
-}
-
-private struct IndexContentView: View {
-    private enum Destination: Hashable {
-        case extractor(uiImage: UIImage)
-        case textTextEditor
-    }
-
-    @StateObject private var viewModel: IndexViewModel
-    @Binding private var path: NavigationPath
-
-    init(path: Binding<NavigationPath>, storeService: StoreServiceProtocol) {
-        _path = path
-        _viewModel = .init(wrappedValue: .init(storeService: storeService))
-    }
-
-    fileprivate var body: some View {
         VStack(spacing: 8) {
-            if let lettersCount = viewModel.lettersCount {
-                Text("集めた文字数: \(String(lettersCount))")
-                    .font(.system(size: 24))
+            Text("集めた文字数: \(String(countCharacters()))")
+                .font(.system(size: 24))
+            WordsScrollFlowView(words: words)
+        }
+        .onChange(of: pickerItem) {
+            guard let pickerItem else {
+                return
             }
-            WordsScrollFlowView(words: viewModel.words ?? [])
-                .onLastWordAppear {
-                    viewModel.loadMoreWords()
+            pickerItem.loadTransferable(type: Data.self) { result in
+                Task { @MainActor in
+                    if pickerItem == self.pickerItem,
+                       case let .success(data) = result,
+                       let uiImage = data.map({ UIImage(data: $0) })?.map(\.self)
+                    {
+                        self.path.append(Destination.extractor(uiImage: uiImage))
+                    }
                 }
-        }
-        .onAppear {
-            viewModel.reloadWords()
-        }
-        .onReceive(viewModel.$uiImage) { uiImage in
-            if let uiImage {
-                path.append(Destination.extractor(uiImage: uiImage))
             }
         }
         .navigationDestination(for: Destination.self) { destination in
@@ -71,10 +62,16 @@ private struct IndexContentView: View {
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
+                PhotosPicker(selection: $pickerItem, matching: .images) {
                     Label("", systemImage: "plus")
                 }
             }
+        }
+    }
+
+    private func countCharacters() -> Int {
+        return words.reduce(0) { sum, word in
+            sum + word.text.count
         }
     }
 }
@@ -82,12 +79,20 @@ private struct IndexContentView: View {
 #if DEBUG
     #Preview {
         @Previewable @State var hasPreloaded = false
-        NavigationRootView { path in
+
+        let modelContainer = try! ModelContainer(for: Word.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        if hasPreloaded {
+            for word in Word.preloadedMockWords {
+                modelContainer.mainContext.insert(word)
+            }
+        }
+
+        return NavigationRootView { path in
             if hasPreloaded {
                 IndexView(path: path)
                     .environment(\.extractorService, MockExtractorService.shared)
                     .environment(\.storeService, MockStoreService.shared)
-
+                    .modelContainer(modelContainer)
             } else {
                 ProgressView()
             }
