@@ -37,7 +37,7 @@ public struct IndexView: View {
                 Task { @MainActor in
                     if pickerItem == self.pickerItem,
                        case let .success(data) = result,
-                       let uiImage = data.map({ UIImage(data: $0) })?.map(\.self)
+                       let uiImage = data.flatMap({ UIImage(data: $0) })
                     {
                         self.path.append(Destination.extractor(uiImage: uiImage))
                     }
@@ -76,29 +76,26 @@ public struct IndexView: View {
 }
 
 #if DEBUG
+    let previewContainer: ModelContainer = {
+        do {
+            return try ModelContainer(for: Word.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        } catch {
+            fatalError("Failed to init modelContainer: \(error)")
+        }
+    }()
+
     #Preview {
-        @Previewable @State var hasPreloaded = false
-
-        let modelContainer = try! ModelContainer(for: Word.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-        if hasPreloaded {
-            for word in Word.preloadedMockWords {
-                modelContainer.mainContext.insert(word)
-            }
-        }
-
-        return NavigationRootView { path in
-            if hasPreloaded {
-                IndexView(path: path)
-                    .environment(\.extractorService, MockExtractorService.shared)
-                    .environment(\.storeService, MockStoreService.shared)
-                    .modelContainer(modelContainer)
-            } else {
-                ProgressView()
-            }
-        }
-        .task {
-            await Word.preloadMockWords()
-            hasPreloaded = true
+        NavigationRootView { path in
+            IndexView(path: path)
+                .environment(\.extractorService, MockExtractorService.shared)
+                .environment(\.storeService, MockStoreService.shared)
+                .modelContainer(previewContainer)
+                .task {
+                    await Word.preloadMockWords()
+                    for word in Word.preloadedMockWords {
+                        previewContainer.mainContext.insert(word)
+                    }
+                }
         }
     }
 #endif
