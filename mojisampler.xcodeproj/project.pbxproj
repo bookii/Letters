@@ -15,7 +15,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		6D98F1542EBE396300759E90 /* Exceptions for "Letters" folder in "mojisampler" target */ = {
+		6D98F1542EBE396300759E90 /* Exceptions for "mojisampler" folder in "mojisampler" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -25,12 +25,12 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6DD4756D2EAEDBF60085DAF9 /* Letters */ = {
+		6DD4756D2EAEDBF60085DAF9 /* mojisampler */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6D98F1542EBE396300759E90 /* Exceptions for "Letters" folder in "mojisampler" target */,
+				6D98F1542EBE396300759E90 /* Exceptions for "mojisampler" folder in "mojisampler" target */,
 			);
-			path = Letters;
+			path = mojisampler;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -50,7 +50,7 @@
 		6DD475622EAEDBF60085DAF9 = {
 			isa = PBXGroup;
 			children = (
-				6DD4756D2EAEDBF60085DAF9 /* Letters */,
+				6DD4756D2EAEDBF60085DAF9 /* mojisampler */,
 				6DD4756C2EAEDBF60085DAF9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -79,7 +79,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				6DD4756D2EAEDBF60085DAF9 /* Letters */,
+				6DD4756D2EAEDBF60085DAF9 /* mojisampler */,
 			);
 			name = mojisampler;
 			packageProductDependencies = (
