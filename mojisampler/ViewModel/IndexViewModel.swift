@@ -52,17 +52,17 @@ public final class IndexViewModel: NSObject, ObservableObject {
     private let limit: Int = 20
     private var offset: Int = 0
     private var hasNoMoreWords: Bool = false
-    private let storeRepository: StoreRepositoryProtocol
+    private let storeService: StoreServiceProtocol
 
-    public init(storeRepository: StoreRepositoryProtocol) {
-        self.storeRepository = storeRepository
+    public init(storeService: StoreServiceProtocol) {
+        self.storeService = storeService
     }
 
     public func reloadWords() {
         do {
             hasNoMoreWords = false
             offset = 0
-            let fetchedWords = try storeRepository.fetchWords(sortBy: [.init(keyPath: \.createdAt, order: .desc)], limit: limit, offset: offset)
+            let fetchedWords = try storeService.fetchWords(sortBy: [.init(keyPath: \.createdAt, order: .desc)], limit: limit, offset: offset)
             words = fetchedWords
             offset += limit
             if fetchedWords.isEmpty {
@@ -78,7 +78,7 @@ public final class IndexViewModel: NSObject, ObservableObject {
             if hasNoMoreWords {
                 return
             }
-            let fetchedWords = try storeRepository.fetchWords(sortBy: [.init(keyPath: \.createdAt, order: .desc)], limit: limit, offset: offset)
+            let fetchedWords = try storeService.fetchWords(sortBy: [.init(keyPath: \.createdAt, order: .desc)], limit: limit, offset: offset)
             words = (words ?? []) + fetchedWords
             offset += limit
             if fetchedWords.isEmpty {

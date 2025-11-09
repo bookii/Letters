@@ -82,6 +82,6 @@ private struct TextEditorContentView: View {
         NavigationRootView { path in
             TextEditorView(path: path)
         }
-        .environment(\.storeRepository, MockStoreRepository.shared)
+        .environment(\.storeService, MockStoreService.shared)
     }
 #endif

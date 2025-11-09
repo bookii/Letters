@@ -11,7 +11,7 @@ import SwiftUI
 import UIKit
 
 public struct ImageConvertiveTextView: View {
-    @Environment(\.storeRepository) private var storeRepository
+    @Environment(\.storeService) private var storeService
     private var onRenderImageAction: ((UIImage) -> Void)?
     @Binding private var isFirstResponder: Bool
     @Binding private var shouldRender: Bool
@@ -22,7 +22,7 @@ public struct ImageConvertiveTextView: View {
     }
 
     public var body: some View {
-        ImageConvertiveTextContentView(isFirstResponder: $isFirstResponder, shouldRender: $shouldRender, storeRepository: storeRepository)
+        ImageConvertiveTextContentView(isFirstResponder: $isFirstResponder, shouldRender: $shouldRender, storeService: storeService)
             .onRenderImage { uiImage in
                 onRenderImageAction?(uiImage)
             }
@@ -41,10 +41,10 @@ private struct ImageConvertiveTextContentView: UIViewRepresentable {
     @Binding private var isFirstResponder: Bool
     @Binding private var shouldRender: Bool
 
-    fileprivate init(isFirstResponder: Binding<Bool>, shouldRender: Binding<Bool>, storeRepository: StoreRepositoryProtocol) {
+    fileprivate init(isFirstResponder: Binding<Bool>, shouldRender: Binding<Bool>, storeService: StoreServiceProtocol) {
         _isFirstResponder = isFirstResponder
         _shouldRender = shouldRender
-        _viewModel = .init(wrappedValue: .init(storeRepository: storeRepository))
+        _viewModel = .init(wrappedValue: .init(storeService: storeService))
     }
 
     fileprivate func makeUIView(context: Context) -> UITextView {
@@ -164,7 +164,7 @@ private struct ImageConvertiveTextContentView: UIViewRepresentable {
                 Color.gray
                     .ignoresSafeArea()
             }
-            .environment(\.storeRepository, MockStoreRepository.shared)
+            .environment(\.storeService, MockStoreService.shared)
             .task {
                 await Word.preloadMockWords()
             }

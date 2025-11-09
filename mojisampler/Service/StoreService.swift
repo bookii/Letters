@@ -1,5 +1,5 @@
 //
-//  StoreRepository.swift
+//  StoreService.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/11/02.
@@ -10,7 +10,7 @@ import SwiftData
 import SwiftUI
 
 extension EnvironmentValues {
-    @Entry var storeRepository: StoreRepositoryProtocol = StoreRepository.shared
+    @Entry var storeService: StoreServiceProtocol = StoreService.shared
 }
 
 public struct StoreSortCondition<Property: Comparable> {
@@ -40,20 +40,20 @@ private extension StoreSortCondition {
     }
 }
 
-public protocol StoreRepositoryProtocol {
+public protocol StoreServiceProtocol {
     var modelContainer: ModelContainer { get }
     func save(words: [Word]) throws
     func fetchWords<Property: Comparable>(prefix: String?, sortBy sortConditions: [StoreSortCondition<Property>], limit: Int, offset: Int) throws -> [Word]
 }
 
-extension StoreRepositoryProtocol {
+extension StoreServiceProtocol {
     func fetchWords<Property: Comparable>(prefix: String? = nil, sortBy sortConditions: [StoreSortCondition<Property>], limit: Int, offset: Int) throws -> [Word] {
         try fetchWords(prefix: prefix, sortBy: sortConditions, limit: limit, offset: offset)
     }
 }
 
-public final class StoreRepository: StoreRepositoryProtocol {
-    public static let shared = StoreRepository()
+public final class StoreService: StoreServiceProtocol {
+    public static let shared = StoreService()
     public let modelContainer: ModelContainer
     private var modelContext: ModelContext {
         // ref: https://stackoverflow.com/questions/79195801/swiftdata-unit-testing-exc-breakpoint-on-insert
@@ -89,8 +89,8 @@ public final class StoreRepository: StoreRepositoryProtocol {
 }
 
 #if DEBUG
-    public final class MockStoreRepository: StoreRepositoryProtocol {
-        public static let shared = MockStoreRepository()
+    public final class MockStoreService: StoreServiceProtocol {
+        public static let shared = MockStoreService()
         public let modelContainer: ModelContainer
 
         private init() {

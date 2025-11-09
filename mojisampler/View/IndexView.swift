@@ -9,7 +9,7 @@ import PhotosUI
 import SwiftUI
 
 public struct IndexView: View {
-    @Environment(\.storeRepository) private var storeRepository
+    @Environment(\.storeService) private var storeService
     @Binding private var path: NavigationPath
 
     public init(path: Binding<NavigationPath>) {
@@ -17,7 +17,7 @@ public struct IndexView: View {
     }
 
     public var body: some View {
-        IndexContentView(path: $path, storeRepository: storeRepository)
+        IndexContentView(path: $path, storeService: storeService)
     }
 }
 
@@ -30,9 +30,9 @@ private struct IndexContentView: View {
     @StateObject private var viewModel: IndexViewModel
     @Binding private var path: NavigationPath
 
-    init(path: Binding<NavigationPath>, storeRepository: StoreRepositoryProtocol) {
+    init(path: Binding<NavigationPath>, storeService: StoreServiceProtocol) {
         _path = path
-        _viewModel = .init(wrappedValue: .init(storeRepository: storeRepository))
+        _viewModel = .init(wrappedValue: .init(storeService: storeService))
     }
 
     fileprivate var body: some View {
@@ -85,8 +85,8 @@ private struct IndexContentView: View {
         NavigationRootView { path in
             if hasPreloaded {
                 IndexView(path: path)
-                    .environment(\.extractorRepository, MockExtractorRepository.shared)
-                    .environment(\.storeRepository, MockStoreRepository.shared)
+                    .environment(\.extractorService, MockExtractorService.shared)
+                    .environment(\.storeService, MockStoreService.shared)
 
             } else {
                 ProgressView()

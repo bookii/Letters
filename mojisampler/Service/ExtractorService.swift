@@ -1,5 +1,5 @@
 //
-//  ExtractorRepository.swift
+//  ExtractorService.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/11/02.
@@ -12,15 +12,15 @@ import UIKit
 import Vision
 
 extension EnvironmentValues {
-    @Entry var extractorRepository: ExtractorRepositoryProtocol = ExtractorRepository.shared
+    @Entry var extractorService: ExtractorServiceProtocol = ExtractorService.shared
 }
 
-public protocol ExtractorRepositoryProtocol {
+public protocol ExtractorServiceProtocol {
     func extractWords(from uiImage: UIImage) async throws -> [Word]
 }
 
-public final class ExtractorRepository: ExtractorRepositoryProtocol {
-    public static let shared = ExtractorRepository()
+public final class ExtractorService: ExtractorServiceProtocol {
+    public static let shared = ExtractorService()
 
     private init() {}
 
@@ -95,8 +95,8 @@ public final class ExtractorRepository: ExtractorRepositoryProtocol {
 }
 
 #if DEBUG
-    public final class MockExtractorRepository: ExtractorRepositoryProtocol {
-        public static let shared = MockExtractorRepository()
+    public final class MockExtractorService: ExtractorServiceProtocol {
+        public static let shared = MockExtractorService()
 
         private init() {}
 
