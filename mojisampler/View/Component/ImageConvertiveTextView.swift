@@ -1,6 +1,6 @@
 //
 //  ImageConvertiveTextView.swift
-//  Letters
+//  mojisampler
 //
 //  Created by mizznoff on 2025/11/03.
 //

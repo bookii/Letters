@@ -1,6 +1,6 @@
 //
-//  LettersApp.swift
-//  Letters
+//  MojisamplerApp.swift
+//  mojisampler
 //
 //  Created by mizznoff on 2025/10/27.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-public struct LettersApp: App {
+public struct MojisamplerApp: App {
     public init() {}
 
     public var body: some Scene {
