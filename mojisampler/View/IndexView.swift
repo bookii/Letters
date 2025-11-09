@@ -16,7 +16,7 @@ public struct IndexView: View {
     }
 
     @Query private var words: [Word]
-    @State public var pickerItem: PhotosPickerItem?
+    @State private var pickerItem: PhotosPickerItem?
     @Binding private var path: NavigationPath
 
     public init(path: Binding<NavigationPath>) {
