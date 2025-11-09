@@ -95,6 +95,7 @@ public struct IndexView: View {
                     for word in Word.preloadedMockWords {
                         previewContainer.mainContext.insert(word)
                     }
+                    try? previewContainer.mainContext.save()
                 }
         }
     }
