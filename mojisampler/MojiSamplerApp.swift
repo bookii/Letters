@@ -1,5 +1,5 @@
 //
-//  MojisamplerApp.swift
+//  MojiSamplerApp.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/10/27.
@@ -17,7 +17,7 @@ public struct MojisamplerApp: App {
                 IndexView(path: path)
             }
         }
-        .environment(\.analyzerRepository, SamplingRepository.shared)
+        .environment(\.extractorRepository, ExtractorRepository.shared)
         .environment(\.storeRepository, StoreRepository.shared)
     }
 }
