@@ -1,5 +1,5 @@
 //
-//  LetterEditorViewModel.swift
+//  TextEditorViewModel.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/11/06.
@@ -8,8 +8,9 @@
 import Combine
 import Foundation
 import SwiftUI
+import UIKit
 
-public final class LetterEditorViewModel: NSObject, ObservableObject {
+public final class TextEditorViewModel: NSObject, ObservableObject {
     @Published public private(set) var savedImage: UIImage?
     @Published public private(set) var error: Error?
     private var savingImage: UIImage?

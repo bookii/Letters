@@ -23,8 +23,8 @@ public struct IndexView: View {
 
 private struct IndexContentView: View {
     private enum Destination: Hashable {
-        case analyzer(uiImage: UIImage)
-        case textEditor
+        case extractor(uiImage: UIImage)
+        case textTextEditor
     }
 
     @StateObject private var viewModel: IndexViewModel
@@ -51,21 +51,21 @@ private struct IndexContentView: View {
         }
         .onReceive(viewModel.$uiImage) { uiImage in
             if let uiImage {
-                path.append(Destination.analyzer(uiImage: uiImage))
+                path.append(Destination.extractor(uiImage: uiImage))
             }
         }
         .navigationDestination(for: Destination.self) { destination in
             switch destination {
-            case let .analyzer(uiImage):
-                AnalyzerView(path: $path, uiImage: uiImage)
-            case .textEditor:
-                LetterEditorView(path: $path)
+            case let .extractor(uiImage):
+                ExtractorView(path: $path, uiImage: uiImage)
+            case .textTextEditor:
+                TextEditorView(path: $path)
             }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    path.append(Destination.textEditor)
+                    path.append(Destination.textTextEditor)
                 } label: {
                     Image(systemName: "square.and.pencil")
                 }
@@ -85,7 +85,7 @@ private struct IndexContentView: View {
         NavigationRootView { path in
             if hasPreloaded {
                 IndexView(path: path)
-                    .environment(\.analyzerRepository, MockAnalyzerRepository.shared)
+                    .environment(\.extractorRepository, MockExtractorRepository.shared)
                     .environment(\.storeRepository, MockStoreRepository.shared)
 
             } else {
