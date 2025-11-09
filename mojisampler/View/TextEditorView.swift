@@ -61,7 +61,7 @@ private struct TextEditorContentView: View {
                     isSaveCompletionAlertPresented = true
                 }
             }
-            .alert("レターを保存しました", isPresented: $isSaveCompletionAlertPresented) {
+            .alert("テキスト画像を保存しました", isPresented: $isSaveCompletionAlertPresented) {
                 Button("共有する") {
                     isShareSheetPresented = true
                 }
