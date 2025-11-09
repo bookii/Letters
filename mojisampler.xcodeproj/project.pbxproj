@@ -11,16 +11,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6DD4756B2EAEDBF60085DAF9 /* Letters.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Letters.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DD4756B2EAEDBF60085DAF9 /* mojisampler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mojisampler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		6D98F1542EBE396300759E90 /* Exceptions for "Letters" folder in "Letters" target */ = {
+		6D98F1542EBE396300759E90 /* Exceptions for "Letters" folder in "mojisampler" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 6DD4756A2EAEDBF60085DAF9 /* Letters */;
+			target = 6DD4756A2EAEDBF60085DAF9 /* mojisampler */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -28,7 +28,7 @@
 		6DD4756D2EAEDBF60085DAF9 /* Letters */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6D98F1542EBE396300759E90 /* Exceptions for "Letters" folder in "Letters" target */,
+				6D98F1542EBE396300759E90 /* Exceptions for "Letters" folder in "mojisampler" target */,
 			);
 			path = Letters;
 			sourceTree = "<group>";
@@ -58,7 +58,7 @@
 		6DD4756C2EAEDBF60085DAF9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6DD4756B2EAEDBF60085DAF9 /* Letters.app */,
+				6DD4756B2EAEDBF60085DAF9 /* mojisampler.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -66,9 +66,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6DD4756A2EAEDBF60085DAF9 /* Letters */ = {
+		6DD4756A2EAEDBF60085DAF9 /* mojisampler */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6DD475782EAEDBF70085DAF9 /* Build configuration list for PBXNativeTarget "Letters" */;
+			buildConfigurationList = 6DD475782EAEDBF70085DAF9 /* Build configuration list for PBXNativeTarget "mojisampler" */;
 			buildPhases = (
 				6DD475672EAEDBF60085DAF9 /* Sources */,
 				6DD475682EAEDBF60085DAF9 /* Frameworks */,
@@ -81,12 +81,12 @@
 			fileSystemSynchronizedGroups = (
 				6DD4756D2EAEDBF60085DAF9 /* Letters */,
 			);
-			name = Letters;
+			name = mojisampler;
 			packageProductDependencies = (
 				6DD4757C2EAEDCB10085DAF9 /* SwiftFormat */,
 			);
 			productName = Letters;
-			productReference = 6DD4756B2EAEDBF60085DAF9 /* Letters.app */;
+			productReference = 6DD4756B2EAEDBF60085DAF9 /* mojisampler.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -104,7 +104,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 6DD475662EAEDBF60085DAF9 /* Build configuration list for PBXProject "Letters" */;
+			buildConfigurationList = 6DD475662EAEDBF60085DAF9 /* Build configuration list for PBXProject "mojisampler" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -121,7 +121,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6DD4756A2EAEDBF60085DAF9 /* Letters */,
+				6DD4756A2EAEDBF60085DAF9 /* mojisampler */,
 			);
 		};
 /* End PBXProject section */
@@ -341,7 +341,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6DD475662EAEDBF60085DAF9 /* Build configuration list for PBXProject "Letters" */ = {
+		6DD475662EAEDBF60085DAF9 /* Build configuration list for PBXProject "mojisampler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6DD475762EAEDBF70085DAF9 /* Debug */,
@@ -350,7 +350,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6DD475782EAEDBF70085DAF9 /* Build configuration list for PBXNativeTarget "Letters" */ = {
+		6DD475782EAEDBF70085DAF9 /* Build configuration list for PBXNativeTarget "mojisampler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6DD475792EAEDBF70085DAF9 /* Debug */,
