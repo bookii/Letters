@@ -1,5 +1,5 @@
 //
-//  SamplingRepository.swift
+//  ExtractorRepository.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/11/02.
@@ -12,19 +12,19 @@ import UIKit
 import Vision
 
 extension EnvironmentValues {
-    @Entry var analyzerRepository: SamplingRepositoryProtocol = SamplingRepository.shared
+    @Entry var extractorRepository: ExtractorRepositoryProtocol = ExtractorRepository.shared
 }
 
-public protocol SamplingRepositoryProtocol {
-    func analyzeIntoWords(uiImage: UIImage) async throws -> [Word]
+public protocol ExtractorRepositoryProtocol {
+    func extractWords(from uiImage: UIImage) async throws -> [Word]
 }
 
-public final class SamplingRepository: SamplingRepositoryProtocol {
-    public static let shared = SamplingRepository()
+public final class ExtractorRepository: ExtractorRepositoryProtocol {
+    public static let shared = ExtractorRepository()
 
     private init() {}
 
-    public func analyzeIntoWords(uiImage: UIImage) async throws -> [Word] {
+    public func extractWords(from uiImage: UIImage) async throws -> [Word] {
         try await withCheckedThrowingContinuation { continuation in
             let request = VNRecognizeTextRequest { [weak self] request, _ in
                 guard let self,
@@ -95,12 +95,12 @@ public final class SamplingRepository: SamplingRepositoryProtocol {
 }
 
 #if DEBUG
-    public final class MockSamplingRepository: SamplingRepositoryProtocol {
-        public static let shared = MockSamplingRepository()
+    public final class MockExtractorRepository: ExtractorRepositoryProtocol {
+        public static let shared = MockExtractorRepository()
 
         private init() {}
 
-        public func analyzeIntoWords(uiImage _: UIImage) async throws -> [Word] {
+        public func extractWords(from _: UIImage) async throws -> [Word] {
             await Word.preloadMockWords()
             return Word.preloadedMockWords
         }
