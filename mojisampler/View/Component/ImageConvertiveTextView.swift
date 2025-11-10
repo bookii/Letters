@@ -13,7 +13,6 @@ import UIKit
 public struct ImageConvertiveTextView: UIViewRepresentable {
     @Binding private var isFirstResponder: Bool
     @Binding private var shouldRender: Bool
-    @State private var fullAttributedText: NSAttributedString = .init(string: "")
     fileprivate var onReceiveErrorAction: ((Error) -> Void)?
     private var onRenderImageAction: ((UIImage) -> Void)?
 
@@ -26,7 +25,6 @@ public struct ImageConvertiveTextView: UIViewRepresentable {
         let textView = UITextView()
         textView.font = .systemFont(ofSize: 24)
         textView.delegate = context.coordinator
-        textView.attributedText = fullAttributedText
         textView.isEditable = true
         textView.isScrollEnabled = true
         textView.textContainerInset = .init(top: 8, left: 8, bottom: 8, right: 8)
