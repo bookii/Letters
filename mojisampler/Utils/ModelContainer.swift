@@ -9,13 +9,18 @@ import Foundation
 import SwiftData
 
 public extension ModelContainer {
-    #if DEBUG
-        static let mockContainer: ModelContainer = {
-            do {
-                return try .init(for: Word.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-            } catch {
-                fatalError("Failed to init modelContainer: \(error)")
-            }
-        }()
-    #endif
+    static let shared: ModelContainer = {
+        do {
+            let isStoredInMemoryOnly: Bool
+            #if DEBUG
+                isStoredInMemoryOnly = true
+            #else
+                // TODO: 準備が整ったら false にする
+                isStoredInMemoryOnly = true
+            #endif
+            return try .init(for: Word.self, configurations: ModelConfiguration(isStoredInMemoryOnly: isStoredInMemoryOnly))
+        } catch {
+            fatalError("Failed to init modelContainer: \(error)")
+        }
+    }()
 }

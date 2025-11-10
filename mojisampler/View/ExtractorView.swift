@@ -12,7 +12,6 @@ import UIKit
 
 public struct ExtractorView: View {
     @Environment(\.extractorService) private var extractorService
-    @Environment(\.storeService) private var storeService
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Binding private var path: NavigationPath
@@ -78,7 +77,6 @@ public struct ExtractorView: View {
             }
         }
         .environment(\.extractorService, MockExtractorService.shared)
-        .environment(\.storeService, MockStoreService.shared)
         .task {
             uiImage = await UIImage.mockImage()
         }

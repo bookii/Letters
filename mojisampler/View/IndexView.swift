@@ -76,26 +76,16 @@ public struct IndexView: View {
 }
 
 #if DEBUG
-    let previewContainer: ModelContainer = {
-        do {
-            return try ModelContainer(for: Word.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-        } catch {
-            fatalError("Failed to init modelContainer: \(error)")
-        }
-    }()
-
     #Preview {
         NavigationRootView { path in
             IndexView(path: path)
                 .environment(\.extractorService, MockExtractorService.shared)
-                .environment(\.storeService, MockStoreService.shared)
-                .modelContainer(previewContainer)
+                .modelContainer(ModelContainer.shared)
                 .task {
                     await Word.preloadMockWords()
                     for word in Word.preloadedMockWords {
-                        previewContainer.mainContext.insert(word)
+                        ModelContainer.shared.mainContext.insert(word)
                     }
-                    try? previewContainer.mainContext.save()
                 }
         }
     }
