@@ -31,7 +31,7 @@ public extension Word {
             _preloadedMockWords ?? []
         }
 
-        private static var _preloadedMockWords: [Word]?
+        private nonisolated(unsafe) static var _preloadedMockWords: [Word]?
 
         static func preloadMockWords() async {
             if _preloadedMockWords == nil {
