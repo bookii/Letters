@@ -5,6 +5,7 @@
 //  Created by mizznoff on 2025/10/27.
 //
 
+import SwiftData
 import SwiftUI
 
 @main
@@ -18,6 +19,6 @@ public struct MojisamplerApp: App {
             }
         }
         .environment(\.extractorService, ExtractorService.shared)
-        .environment(\.storeService, StoreService.shared)
+        .modelContainer(ModelContainer.shared)
     }
 }

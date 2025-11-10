@@ -9,35 +9,33 @@ import SwiftData
 import SwiftUI
 
 public struct TextEditorView: View {
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var viewModel = TextEditorViewModel()
     @Binding private var path: NavigationPath
+    @State private var isFirstResponder: Bool = false
+    @State private var shouldRender: Bool = false
+    @State private var isSaveCompletionAlertPresented: Bool = false
+    @State private var isShareSheetPresented: Bool = false
+    @State private var error: Error?
+    @State private var isErrorAlertPresented: Bool = false
 
     public init(path: Binding<NavigationPath>) {
         _path = path
     }
 
     public var body: some View {
-        TextEditorContentView(path: $path)
-    }
-}
-
-private struct TextEditorContentView: View {
-    @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel: TextEditorViewModel
-    @State private var isFirstResponder: Bool = false
-    @State private var shouldRender: Bool = false
-    @State private var isSaveCompletionAlertPresented: Bool = false
-    @State private var isShareSheetPresented: Bool = false
-    @Binding private var path: NavigationPath
-
-    fileprivate init(path: Binding<NavigationPath>) {
-        _path = path
-        _viewModel = .init(wrappedValue: .init())
-    }
-
-    fileprivate var body: some View {
         ImageConvertiveTextView(isFirstResponder: $isFirstResponder, shouldRender: $shouldRender)
             .onRenderImage { uiImage in
                 viewModel.saveImage(uiImage)
+            }
+            .onReceiveError { error in
+                self.error = error
+                isErrorAlertPresented = true
+            }
+            .onReceive(viewModel.$savedImage) { newValue in
+                if newValue != nil {
+                    isSaveCompletionAlertPresented = true
+                }
             }
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(16)
@@ -47,6 +45,7 @@ private struct TextEditorContentView: View {
                     .ignoresSafeArea()
             }
             .navigationTitle("テキストの作成")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -56,17 +55,17 @@ private struct TextEditorContentView: View {
                     }
                 }
             }
-            .onReceive(viewModel.$savedImage) { newValue in
-                if newValue != nil {
-                    isSaveCompletionAlertPresented = true
-                }
-            }
             .alert("テキスト画像を保存しました", isPresented: $isSaveCompletionAlertPresented) {
                 Button("共有する") {
                     isShareSheetPresented = true
                 }
                 Button("閉じる") {
                     dismiss()
+                }
+            }
+            .alert(error?.localizedDescription ?? "Unknown error", isPresented: $isErrorAlertPresented) {
+                Button("OK") {
+                    self.error = nil
                 }
             }
             .sheet(isPresented: $isShareSheetPresented) {
@@ -82,6 +81,12 @@ private struct TextEditorContentView: View {
         NavigationRootView { path in
             TextEditorView(path: path)
         }
-        .environment(\.storeService, MockStoreService.shared)
+        .modelContainer(ModelContainer.shared)
+        .task {
+            await Word.preloadMockWords()
+            for word in Word.preloadedMockWords {
+                ModelContainer.shared.mainContext.insert(word)
+            }
+        }
     }
 #endif
