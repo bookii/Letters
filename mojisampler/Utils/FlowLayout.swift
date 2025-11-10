@@ -31,10 +31,10 @@ public struct FlowLayout: Layout {
                                 alignment: alignment,
                                 spacing: spacing)
         for row in result.rows {
-            let rowXOffset = (bounds.width - row.frame.width) * alignment.horizontal.percent
+            let rowXOffset = (bounds.width - row.frame.width) * alignment.horizontal.percent()
             for index in row.range {
                 let xPos = rowXOffset + row.frame.minX + row.xOffsets[index - row.range.lowerBound] + bounds.minX
-                let rowYAlignment = (row.frame.height - subviews[index].sizeThatFits(.unspecified).height) * alignment.vertical.percent
+                let rowYAlignment = (row.frame.height - subviews[index].sizeThatFits(.unspecified).height) * alignment.vertical.percent()
                 let yPos = row.frame.minY + rowYAlignment + bounds.minY
                 subviews[index].place(at: CGPoint(x: xPos, y: yPos), anchor: .topLeading, proposal: .unspecified)
             }
@@ -113,7 +113,7 @@ public struct FlowLayout: Layout {
 }
 
 private extension HorizontalAlignment {
-    var percent: Double {
+    nonisolated func percent() -> Double {
         switch self {
         case .leading: 0
         case .trailing: 1
@@ -123,7 +123,7 @@ private extension HorizontalAlignment {
 }
 
 private extension VerticalAlignment {
-    var percent: Double {
+    nonisolated func percent() -> Double {
         switch self {
         case .top: 0
         case .bottom: 1
