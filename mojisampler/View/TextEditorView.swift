@@ -56,11 +56,6 @@ private struct TextEditorContentView: View {
                     }
                 }
             }
-            .onReceive(viewModel.$savedImage) { newValue in
-                if newValue != nil {
-                    isSaveCompletionAlertPresented = true
-                }
-            }
             .alert("テキスト画像を保存しました", isPresented: $isSaveCompletionAlertPresented) {
                 Button("共有する") {
                     isShareSheetPresented = true
@@ -72,6 +67,11 @@ private struct TextEditorContentView: View {
             .sheet(isPresented: $isShareSheetPresented) {
                 if let savedImage = viewModel.savedImage {
                     ShareImageActivityView(uiImage: savedImage)
+                }
+            }
+            .onReceive(viewModel.$savedImage) { newValue in
+                if newValue != nil {
+                    isSaveCompletionAlertPresented = true
                 }
             }
     }

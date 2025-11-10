@@ -6,14 +6,21 @@
 //
 
 import Foundation
+import SwiftData
 import SwiftUI
 import UIKit
 
 public struct ExtractorView: View {
     @Environment(\.extractorService) private var extractorService
     @Environment(\.storeService) private var storeService
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @Binding private var path: NavigationPath
-    private var uiImage: UIImage
+    @State private var words: [Word]?
+    @State private var error: Error?
+    @State private var isErrorAlertPresented: Bool = false
+    @State private var viewWidth: CGFloat = 0
+    private let uiImage: UIImage
 
     public init(path: Binding<NavigationPath>, uiImage: UIImage) {
         _path = path
@@ -21,24 +28,8 @@ public struct ExtractorView: View {
     }
 
     public var body: some View {
-        ExtractorContentView(uiImage: uiImage, extractorService: extractorService, storeService: storeService)
-    }
-}
-
-private struct ExtractorContentView: View {
-    @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel: ExtractorViewModel
-    @State private var viewWidth: CGFloat = 0
-    private let uiImage: UIImage
-
-    fileprivate init(uiImage: UIImage, extractorService: ExtractorServiceProtocol, storeService: StoreServiceProtocol) {
-        self.uiImage = uiImage
-        _viewModel = .init(wrappedValue: .init(extractorService: extractorService, storeService: storeService))
-    }
-
-    fileprivate var body: some View {
         Group {
-            if let words = viewModel.words {
+            if let words {
                 WordsScrollFlowView(words: words)
                     .onGeometryChange(for: CGFloat.self, of: \.size.width) { width in
                         viewWidth = width
@@ -53,20 +44,32 @@ private struct ExtractorContentView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("保存") {
-                    viewModel.save()
+                    guard let words else {
+                        return
+                    }
+                    for word in words {
+                        modelContext.insert(word)
+                    }
                     dismiss()
                 }
             }
         }
+        .alert(error?.localizedDescription ?? "Unknown error", isPresented: $isErrorAlertPresented) {
+            Button("OK") {
+                self.error = nil
+            }
+        }
         .task {
-            await viewModel.extractWords(from: uiImage)
+            do {
+                words = try await extractorService.extractWords(from: uiImage)
+            } catch {
+                self.error = error
+            }
         }
     }
 }
 
 #if DEBUG
-    import SwiftData
-
     #Preview {
         @Previewable @State var uiImage: UIImage? = nil
         NavigationRootView { path in
@@ -74,7 +77,6 @@ private struct ExtractorContentView: View {
                 ExtractorView(path: path, uiImage: uiImage)
             }
         }
-        .modelContainer(MockStoreService.shared.modelContainer)
         .environment(\.extractorService, MockExtractorService.shared)
         .environment(\.storeService, MockStoreService.shared)
         .task {
