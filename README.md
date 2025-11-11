@@ -4,10 +4,10 @@
 
 ```mermaid
 erDiagram
-    OriginalImage ||--o{ Word : ""
+    AnalyzedImage ||--o{ Word : ""
     Word ||--o{ WordTagging : ""
     WordTagging }o--|| Tag : ""
-    OriginalImage {
+    AnalyzedImage {
         UUID id PK
         Date createdat
     }
@@ -15,7 +15,7 @@ erDiagram
         UUID id PK
         Data imageData
         String text
-        Int indexInOriginalImage
+        Int indexInAnalyzedImage
     }
     WordTagging {
         UUID wordId PK,FK
