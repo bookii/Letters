@@ -97,6 +97,8 @@ public struct TextEditorView: View {
         case .notDetermined:
             if await PHPhotoLibrary.requestAuthorization(for: .readWrite) == .authorized {
                 try await saveImage(uiImage)
+            } else {
+                throw Error.photoLibraryUnavailable
             }
         default:
             throw Error.photoLibraryUnavailable
