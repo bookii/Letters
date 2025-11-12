@@ -86,6 +86,7 @@ public struct IndexView: View {
                     if let mockAnalyzedImage = AnalyzedImage.preloadedMockAnalyzedImage {
                         ModelContainer.shared.mainContext.insert(mockAnalyzedImage)
                     }
+                }
         }
     }
 #endif

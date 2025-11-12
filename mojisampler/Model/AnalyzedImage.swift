@@ -10,7 +10,7 @@ import SwiftData
 import UIKit
 
 @Model
-public final class AnalyzedImage: Identifiable, Sendable {
+public final class AnalyzedImage: Identifiable, @unchecked Sendable {
     @Attribute(.unique) public private(set) var id: UUID
     public private(set) var createdAt: Date
     public var words: [Word] {
