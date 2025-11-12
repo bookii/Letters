@@ -51,13 +51,13 @@ public struct WordsScrollFlowView: View {
         @Previewable @State var id: UUID?
         @Previewable @State var text = ""
         VStack {
-            WordsScrollFlowView(words: Word.preloadedMockWords)
+            WordsScrollFlowView(words: AnalyzedImage.preloadedMockAnalyzedImage?.words ?? [])
                 .onLastWordAppear {
                     text = "Last word appeared"
                 }
                 .id(id)
                 .task {
-                    await Word.preloadMockWords()
+                    await AnalyzedImage.preloadMockAnalyzedImage()
                     id = .init()
                 }
             Text(text)

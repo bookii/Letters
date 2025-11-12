@@ -1,5 +1,5 @@
 //
-//  ExtractorService.swift
+//  AnalyzerService.swift
 //  mojisampler
 //
 //  Created by mizznoff on 2025/11/02.
@@ -12,25 +12,25 @@ import UIKit
 import Vision
 
 extension EnvironmentValues {
-    @Entry var extractorService: ExtractorServiceProtocol = ExtractorService.shared
+    @Entry var analyzerService: AnalyzerServiceProtocol = AnalyzerService.shared
 }
 
-public protocol ExtractorServiceProtocol {
-    func extractWords(from uiImage: UIImage) async throws -> [Word]
+public protocol AnalyzerServiceProtocol {
+    func analyzeWords(from uiImage: UIImage) async throws -> AnalyzedImage?
 }
 
-public final class ExtractorService: ExtractorServiceProtocol {
-    public static let shared = ExtractorService()
+public final class AnalyzerService: AnalyzerServiceProtocol {
+    public static let shared = AnalyzerService()
 
     private init() {}
 
-    public func extractWords(from uiImage: UIImage) async throws -> [Word] {
+    public func analyzeWords(from uiImage: UIImage) async throws -> AnalyzedImage? {
         try await withCheckedThrowingContinuation { continuation in
             let request = VNRecognizeTextRequest { [weak self] request, _ in
                 guard let self,
                       let observations = request.results as? [VNRecognizedTextObservation]
                 else {
-                    continuation.resume(returning: [])
+                    continuation.resume(returning: nil)
                     return
                 }
 
@@ -49,11 +49,11 @@ public final class ExtractorService: ExtractorServiceProtocol {
                         else {
                             return true
                         }
-                        words.append(.init(text: String(text[range]), imageData: imageData))
+                        words.append(.init(text: String(text[range]), imageData: imageData, indexInAnalyzedImage: words.count))
                         return true
                     }
                 }
-                continuation.resume(returning: words)
+                continuation.resume(returning: .init(words: words))
             }
 
             request.recognitionLevel = .accurate
@@ -61,7 +61,7 @@ public final class ExtractorService: ExtractorServiceProtocol {
             request.usesLanguageCorrection = false
             request.minimumTextHeight = 0.1
             guard let cgImage = uiImage.cgImage else {
-                continuation.resume(returning: [])
+                continuation.resume(returning: nil)
                 return
             }
             let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
@@ -95,14 +95,14 @@ public final class ExtractorService: ExtractorServiceProtocol {
 }
 
 #if DEBUG
-    public final class MockExtractorService: ExtractorServiceProtocol {
-        public static let shared = MockExtractorService()
+    public final class MockAnalyzerService: AnalyzerServiceProtocol {
+        public static let shared = MockAnalyzerService()
 
         private init() {}
 
-        public func extractWords(from _: UIImage) async throws -> [Word] {
-            await Word.preloadMockWords()
-            return Word.preloadedMockWords
+        public func analyzeWords(from _: UIImage) async throws -> AnalyzedImage? {
+            await AnalyzedImage.preloadMockAnalyzedImage()
+            return AnalyzedImage.preloadedMockAnalyzedImage
         }
     }
 #endif
