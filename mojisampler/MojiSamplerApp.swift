@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 @main
-public struct MojisamplerApp: App {
+public struct MojiSamplerApp: App {
     public init() {}
 
     public var body: some Scene {
@@ -18,7 +18,7 @@ public struct MojisamplerApp: App {
                 IndexView(path: path)
             }
         }
-        .environment(\.extractorService, ExtractorService.shared)
+        .environment(\.analyzerService, AnalyzerService.shared)
         .modelContainer(ModelContainer.shared)
     }
 }

@@ -15,7 +15,7 @@ public struct IndexView: View {
         case textEditor
     }
 
-    @Query private var words: [Word]
+    @Query private var analyzedImages: [AnalyzedImage]
     @State private var pickerItem: PhotosPickerItem?
     @Binding private var path: NavigationPath
 
@@ -27,7 +27,7 @@ public struct IndexView: View {
         VStack(spacing: 8) {
             Text("集めた文字数: \(String(countCharacters()))")
                 .font(.system(size: 24))
-            WordsScrollFlowView(words: words)
+            WordsScrollFlowView(words: analyzedImages.flatMap(\.words))
         }
         .onChange(of: pickerItem) {
             guard let pickerItem else {
@@ -69,7 +69,7 @@ public struct IndexView: View {
     }
 
     private func countCharacters() -> Int {
-        return words.reduce(0) { sum, word in
+        return analyzedImages.flatMap(\.words).reduce(0) { sum, word in
             sum + word.text.count
         }
     }
@@ -79,13 +79,11 @@ public struct IndexView: View {
     #Preview {
         NavigationRootView { path in
             IndexView(path: path)
-                .environment(\.extractorService, MockExtractorService.shared)
+                .environment(\.analyzerService, MockAnalyzerService.shared)
                 .modelContainer(ModelContainer.shared)
                 .task {
-                    await Word.preloadMockWords()
-                    for word in Word.preloadedMockWords {
-                        ModelContainer.shared.mainContext.insert(word)
-                    }
+                    await AnalyzedImage.preloadMockAnalyzedImage()
+                    ModelContainer.shared.mainContext.insert(AnalyzedImage.preloadedMockAnalyzedImage!)
                 }
         }
     }

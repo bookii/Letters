@@ -11,11 +11,11 @@ import SwiftUI
 import UIKit
 
 public struct ExtractorView: View {
-    @Environment(\.extractorService) private var extractorService
+    @Environment(\.analyzerService) private var analyzerService
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Binding private var path: NavigationPath
-    @State private var words: [Word]?
+    @State private var analyzedImage: AnalyzedImage?
     @State private var error: Error?
     @State private var isErrorAlertPresented: Bool = false
     @State private var viewWidth: CGFloat = 0
@@ -28,8 +28,8 @@ public struct ExtractorView: View {
 
     public var body: some View {
         Group {
-            if let words {
-                WordsScrollFlowView(words: words)
+            if let analyzedImage {
+                WordsScrollFlowView(words: analyzedImage.words)
                     .onGeometryChange(for: CGFloat.self, of: \.size.width) { width in
                         viewWidth = width
                     }
@@ -43,12 +43,10 @@ public struct ExtractorView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("保存") {
-                    guard let words else {
+                    guard let analyzedImage else {
                         return
                     }
-                    for word in words {
-                        modelContext.insert(word)
-                    }
+                    modelContext.insert(analyzedImage)
                     dismiss()
                 }
             }
@@ -60,7 +58,7 @@ public struct ExtractorView: View {
         }
         .task {
             do {
-                words = try await extractorService.extractWords(from: uiImage)
+                analyzedImage = try await analyzerService.analyzeWords(from: uiImage)
             } catch {
                 self.error = error
             }
@@ -76,7 +74,7 @@ public struct ExtractorView: View {
                 ExtractorView(path: path, uiImage: uiImage)
             }
         }
-        .environment(\.extractorService, MockExtractorService.shared)
+        .environment(\.analyzerService, MockAnalyzerService.shared)
         .task {
             uiImage = await UIImage.mockImage()
         }

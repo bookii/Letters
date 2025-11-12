@@ -12,7 +12,7 @@ import UIKit
 import Vision
 
 extension EnvironmentValues {
-    @Entry var analyzerrService: AnalyzerServiceProtocol = AnalyzerService.shared
+    @Entry var analyzerService: AnalyzerServiceProtocol = AnalyzerService.shared
 }
 
 public protocol AnalyzerServiceProtocol {
@@ -36,8 +36,7 @@ public final class AnalyzerService: AnalyzerServiceProtocol {
 
                 let tokenizer = NLTokenizer(unit: .word)
                 var words: [Word] = []
-                for index in observations.indices {
-                    let observation = observations[index]
+                for observation in observations {
                     guard let candidate = observation.topCandidates(1).first else {
                         continue
                     }
@@ -50,7 +49,7 @@ public final class AnalyzerService: AnalyzerServiceProtocol {
                         else {
                             return true
                         }
-                        words.append(.init(text: String(text[range]), imageData: imageData, indexInAnalyzedImage: index))
+                        words.append(.init(text: String(text[range]), imageData: imageData, indexInAnalyzedImage: words.count))
                         return true
                     }
                 }

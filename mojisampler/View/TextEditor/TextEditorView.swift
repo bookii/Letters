@@ -81,12 +81,5 @@ public struct TextEditorView: View {
         NavigationRootView { path in
             TextEditorView(path: path)
         }
-        .modelContainer(ModelContainer.shared)
-        .task {
-            await Word.preloadMockWords()
-            for word in Word.preloadedMockWords {
-                ModelContainer.shared.mainContext.insert(word)
-            }
-        }
     }
 #endif
