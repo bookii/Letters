@@ -1,5 +1,9 @@
 # mojisampler
 
+## アーキテクチャ
+
+MV Architecture
+
 ## データベース設計
 
 ```mermaid
