@@ -89,13 +89,13 @@ public struct TextEditorView: View {
     }
 
     private nonisolated func saveImage(_ uiImage: UIImage) async throws {
-        switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
+        switch PHPhotoLibrary.authorizationStatus(for: .addOnly) {
         case .authorized:
             try await PHPhotoLibrary.shared().performChanges {
                 PHAssetChangeRequest.creationRequestForAsset(from: uiImage)
             }
         case .notDetermined:
-            if await PHPhotoLibrary.requestAuthorization(for: .readWrite) == .authorized {
+            if await PHPhotoLibrary.requestAuthorization(for: .addOnly) == .authorized {
                 try await saveImage(uiImage)
             } else {
                 throw Error.photoLibraryUnavailable
