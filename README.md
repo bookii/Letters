@@ -9,7 +9,7 @@ erDiagram
     WordTagging }o--|| Tag : ""
     AnalyzedImage {
         UUID id PK
-        Date createdat
+        Date createdAt
     }
     Word {
         UUID id PK
