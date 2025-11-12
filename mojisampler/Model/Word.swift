@@ -10,7 +10,7 @@ import SwiftData
 import UIKit
 
 @Model
-public final class Word: Identifiable, Sendable {
+public final class Word: Identifiable, @unchecked Sendable {
     @Attribute(.unique) public private(set) var id: UUID
     public private(set) var text: String
     public private(set) var imageData: Data
