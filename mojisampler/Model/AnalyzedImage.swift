@@ -33,7 +33,7 @@ public final class AnalyzedImage: Identifiable, Sendable {
 
 public extension AnalyzedImage {
     #if DEBUG
-        static var preloadedMockAnalyzedImage: AnalyzedImage?
+        nonisolated(unsafe) static var preloadedMockAnalyzedImage: AnalyzedImage?
 
         static func preloadMockAnalyzedImage() async {
             await Word.preloadMockWords()
