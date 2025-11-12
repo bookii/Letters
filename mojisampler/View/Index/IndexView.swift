@@ -82,10 +82,7 @@ public struct IndexView: View {
                 .environment(\.analyzerService, MockAnalyzerService.shared)
                 .modelContainer(ModelContainer.shared)
                 .task {
-                    await AnalyzedImage.preloadMockAnalyzedImage()
-                    if let mockAnalyzedImage = AnalyzedImage.preloadedMockAnalyzedImage {
-                        ModelContainer.shared.mainContext.insert(mockAnalyzedImage)
-                    }
+                    await ModelContainer.shared.mainContext.insert(AnalyzedImage.mockAnalyzedImage())
                 }
         }
     }

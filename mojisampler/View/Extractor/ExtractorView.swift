@@ -58,7 +58,7 @@ public struct ExtractorView: View {
         }
         .task {
             do {
-                analyzedImage = try await analyzerService.analyzeWords(from: uiImage)
+                analyzedImage = try await analyzerService.analyzeImage(uiImage)
             } catch {
                 self.error = error
             }

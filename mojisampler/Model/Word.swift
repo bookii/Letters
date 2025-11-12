@@ -31,19 +31,11 @@ public extension Word {
             let imageURL: URL
         }
 
-        static var preloadedMockWords: [Word] {
-            _preloadedMockWords ?? []
-        }
-
-        private nonisolated(unsafe) static var _preloadedMockWords: [Word]?
-
-        static func preloadMockWords() async {
-            if _preloadedMockWords == nil {
-                _preloadedMockWords = await loadMockWords()
+        private nonisolated(unsafe) static var _mockWords: [Word]?
+        static func mockWords() async -> [Word] {
+            if let _mockWords {
+                return _mockWords
             }
-        }
-
-        private static func loadMockWords() async -> [Word] {
             let unstructuredWords: [UnstructuredWord] = [
                 .init(text: "コメント", imageURL: .init(string: "https://i.gyazo.com/9d49450a3a24b0e7bf1ac1617c577bb0.png")!),
                 .init(text: "ほぼ", imageURL: .init(string: "https://i.gyazo.com/74a97a6d90825636b2ee1a49b1d2e8e3.png")!),
@@ -64,6 +56,7 @@ public extension Word {
                     continue
                 }
             }
+            _mockWords = words
             return words
         }
     #endif

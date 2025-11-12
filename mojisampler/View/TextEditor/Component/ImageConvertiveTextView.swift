@@ -172,8 +172,5 @@ extension ImageConvertiveTextView.Coordinator: HorizontalWordCollectionViewDeleg
                 Color.gray
                     .ignoresSafeArea()
             }
-            .task {
-                await Word.preloadMockWords()
-            }
     }
 #endif
