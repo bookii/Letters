@@ -16,7 +16,7 @@ extension EnvironmentValues {
 }
 
 public protocol AnalyzerServiceProtocol {
-    func analyzeWords(from uiImage: UIImage) async throws -> AnalyzedImage?
+    func analyzeImage(_ uiImage: UIImage) async throws -> AnalyzedImage?
 }
 
 public final class AnalyzerService: AnalyzerServiceProtocol {
@@ -24,7 +24,7 @@ public final class AnalyzerService: AnalyzerServiceProtocol {
 
     private init() {}
 
-    public func analyzeWords(from uiImage: UIImage) async throws -> AnalyzedImage? {
+    public func analyzeImage(_ uiImage: UIImage) async throws -> AnalyzedImage? {
         try await withCheckedThrowingContinuation { continuation in
             let request = VNRecognizeTextRequest { [weak self] request, _ in
                 guard let self,
@@ -100,9 +100,8 @@ public final class AnalyzerService: AnalyzerServiceProtocol {
 
         private init() {}
 
-        public func analyzeWords(from _: UIImage) async throws -> AnalyzedImage? {
-            await AnalyzedImage.preloadMockAnalyzedImage()
-            return AnalyzedImage.preloadedMockAnalyzedImage
+        public func analyzeImage(_: UIImage) async throws -> AnalyzedImage? {
+            await AnalyzedImage.mockAnalyzedImage()
         }
     }
 #endif

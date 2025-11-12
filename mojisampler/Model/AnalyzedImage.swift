@@ -33,11 +33,14 @@ public final class AnalyzedImage: Identifiable, @unchecked Sendable {
 
 public extension AnalyzedImage {
     #if DEBUG
-        nonisolated(unsafe) static var preloadedMockAnalyzedImage: AnalyzedImage?
-
-        static func preloadMockAnalyzedImage() async {
-            await Word.preloadMockWords()
-            preloadedMockAnalyzedImage = .init(words: Word.preloadedMockWords)
+        private nonisolated(unsafe) static var _mockAnalyzedImage: AnalyzedImage?
+        static func mockAnalyzedImage() async -> AnalyzedImage {
+            if let _mockAnalyzedImage {
+                return _mockAnalyzedImage
+            }
+            let analyzedImage = await AnalyzedImage(words: Word.mockWords())
+            _mockAnalyzedImage = analyzedImage
+            return analyzedImage
         }
     #endif
 }
